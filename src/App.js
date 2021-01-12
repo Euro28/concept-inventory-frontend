@@ -9,14 +9,14 @@ import { Redirect, Route, Switch } from "react-router-dom";
 function App() {
   return (
     <div>
-      <Switch>
+        <Switch>
         <Route exact path="/" component={Login}/>
         <Route exact path="/register" component={Register}/>
         <Route exact path="/dashboard" component={Dashboard}/>
         <Route exact path="/takeQuiz" component={Quiz}/>
         <Route exact path="/results" component={Results}/>
         <Redirect from="/" to="/"/>
-      </Switch>
+      </Switch> 
     </div>
   );
 }
