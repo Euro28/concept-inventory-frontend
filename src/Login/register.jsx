@@ -14,12 +14,9 @@ const Register = (props) => {
   const submitName = async (e) => {
     e.preventDefault();
     try {
-      const register = await axios.post(
-        "https://concept-api2.herokuapp.com/api/register",
-        {
-          name,
-        }
-      );
+      const register = await axios.post("/api/register", {
+        name,
+      });
       if (register.status === 201) {
         setAlert("success");
         setName("");

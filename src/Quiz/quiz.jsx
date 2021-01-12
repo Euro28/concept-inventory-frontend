@@ -10,10 +10,10 @@ const Quiz = (props) => {
 
   const storeData = async (quizResults) => {
     try {
-      await axios.post("https://concept-api2.herokuapp.com/api/results", {
+      await axios.post("/api/results", {
         results: quizResults,
       });
-      await axios.patch("https://concept-api2.herokuapp.com/api/takenQuiz");
+      await axios.patch("/api/takenQuiz");
     } catch (err) {
       setError(
         "couldn't post results of quiz, could you please take it again sorry :("
@@ -33,7 +33,7 @@ const Quiz = (props) => {
       {resultPage ? (
         Results()
       ) : (
-        <div style={{ display: "inline-block", width: "100%" }}>
+        <div >
           <Survey.Survey
             showCompletedPage={false}
             onComplete={(data) => {

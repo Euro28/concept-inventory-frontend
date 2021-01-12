@@ -13,9 +13,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const loggedIn = async () => {
-      const user = await axios.post(
-        "https://concept-api2.herokuapp.com/api/login"
-      );
+      const user = await axios.post("/api/login");
       if (user.status === 200) {
         setUser(user.data.user);
       }
