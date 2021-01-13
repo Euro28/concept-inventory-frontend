@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BUTTON, MYFORM, CONTAINER } from "./newQuestionComponents.js";
 import { Form, Button } from "react-bootstrap";
 
@@ -26,31 +26,39 @@ import NewAnswer from "./newAnswer.jsx";
 
 const NewQuestion = () => {
   const [answers, setAnswers] = useState([]);
-  const [newAnswer, setNewAnswer] = useState(true);
+  const [newAnswer, setNewAnswer] = useState(false);
+
+  const addAnswer = (ans) => {
+    setNewAnswer(false);
+
+    const ansCopy = [...answers]
+    ansCopy.push(ans);
+
+    setAnswers(ansCopy);
+  };
+
+  useEffect(() => {
+    console.log("answers", answers);
+  }, [answers]);
 
   return (
-    <div>
-      <CONTAINER>
-        <MYFORM className="mx-auto">
-          <Form.Group controlId="questionName">
-            <Form.Label> Question: </Form.Label>
-            <Form.Control
-              type="text"
-              name="question"
-              placeholder="Question..."
-            />
-          </Form.Group>
-          {newAnswer && <NewAnswer />}
-          <BUTTON> Add an answer</BUTTON>
-        </MYFORM>
-      </CONTAINER>
-      {answers.map((answer) => (
-        <li key={answer.text}>
-          {" "}
-          {answer.text} {answer.value} {answer.title}
-        </li>
-      ))}
-    </div>
+    <CONTAINER>
+      <MYFORM className="mx-auto">
+        <Form.Group controlId="questionName">
+          <Form.Label> Question: </Form.Label>
+          <Form.Control type="text" name="question" placeholder="Question..." />
+        </Form.Group>
+        <BUTTON onClick={() => setNewAnswer(true)} disabled={newAnswer}>
+          Add an answer
+        </BUTTON>
+      </MYFORM>
+      {newAnswer && <NewAnswer addAnswer={addAnswer} />}
+    </CONTAINER>
+    // {answers.map((answer) => (
+    //   <li key={answer.text}>
+    //     {answer.text} {answer.value} {answer.title}
+    //   </li>
+    // ))}
   );
 };
 
