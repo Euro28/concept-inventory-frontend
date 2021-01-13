@@ -45,6 +45,12 @@ const Dashboard = () => {
           View Results
         </Button>
       </Link>
+      <Link to={"/makeQuiz"}> 
+      <Button variant="dark" size="lg" block>
+      Create Concept Inventory
+    </Button>
+    </Link>
+    
       Thank you for taking the concept inventory !
     </div>
   );
