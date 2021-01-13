@@ -1,13 +1,23 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import * as Survey from "survey-react";
-import JSON from "./questions.js";
 
 const Quiz = (props) => {
   // const [quiz, setQuiz] = useState({})
   const [resultPage, setResultPage] = useState(false);
   const [error, setError] = useState("");
+  const [questions, setQuestions] = useState({});
 
+  useEffect(() => {
+    const getQuestions = async () => {
+      try {
+        const questionsAPI = await axios.get("/api/questions");
+        setQuestions(questionsAPI);
+      } catch (err) {
+        setError("couldnt retrieve questions please contact euro");
+      }
+    };
+  }, []);
   const storeData = async (quizResults) => {
     try {
       await axios.post("/api/results", {
@@ -27,20 +37,19 @@ const Quiz = (props) => {
     </main>
   );
 
-
   return (
     <>
       {resultPage ? (
         Results()
       ) : (
-        <div >
+        <div>
           <Survey.Survey
             showCompletedPage={false}
             onComplete={(data) => {
               storeData(data.valuesHash);
               setResultPage(true);
             }}
-            json={JSON}
+            json={questions}
           />
         </div>
       )}

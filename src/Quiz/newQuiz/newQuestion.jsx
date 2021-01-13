@@ -24,6 +24,10 @@ import NewAnswer from "./newAnswer.jsx";
 //after submitting the question, there should be at a minimum two answers
 //and at least one answer must be marked correct
 
+//each answer prinnted should also have a remove and edit button
+//remove button is simple remove from object
+//edit will open newAnswer with passed in current props, and delete current entry.
+//
 const NewQuestion = () => {
   const [answers, setAnswers] = useState([]);
   const [newAnswer, setNewAnswer] = useState(false);
@@ -31,7 +35,7 @@ const NewQuestion = () => {
   const addAnswer = (ans) => {
     setNewAnswer(false);
 
-    const ansCopy = [...answers]
+    const ansCopy = [...answers];
     ansCopy.push(ans);
 
     setAnswers(ansCopy);
@@ -42,23 +46,37 @@ const NewQuestion = () => {
   }, [answers]);
 
   return (
-    <CONTAINER>
-      <MYFORM className="mx-auto">
-        <Form.Group controlId="questionName">
-          <Form.Label> Question: </Form.Label>
-          <Form.Control type="text" name="question" placeholder="Question..." />
-        </Form.Group>
-        <BUTTON onClick={() => setNewAnswer(true)} disabled={newAnswer}>
-          Add an answer
-        </BUTTON>
-      </MYFORM>
-      {newAnswer && <NewAnswer addAnswer={addAnswer} />}
-    </CONTAINER>
-    // {answers.map((answer) => (
-    //   <li key={answer.text}>
-    //     {answer.text} {answer.value} {answer.title}
-    //   </li>
-    // ))}
+    <>
+      <CONTAINER>
+        <MYFORM className="mx-auto">
+          <Form.Group controlId="questionName">
+            <Form.Label> Question: </Form.Label>
+            <Form.Control
+              type="text"
+              name="question"
+              placeholder="Question..."
+            />
+          </Form.Group>
+          <BUTTON onClick={() => setNewAnswer(true)} disabled={newAnswer}>
+            Add an answer
+          </BUTTON>
+          {!newAnswer && (
+            <BUTTON
+              style={{ "marginLeft": "560px" }}
+              onClick={() => console.log("patch / post new question data")}
+            >
+              Save Changes
+            </BUTTON>
+          )}
+        </MYFORM>
+        {newAnswer && <NewAnswer addAnswer={addAnswer} />}
+      </CONTAINER>
+      {answers.map((answer) => (
+        <li key={answer.title}>
+          {answer.title} {answer.misconception} {String(answer.correct)}
+        </li>
+      ))}
+    </>
   );
 };
 
