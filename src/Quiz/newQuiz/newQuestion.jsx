@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { BUTTON, MYFORM, CONTAINER } from "./newQuestionComponents.js";
 import { Form, Button } from "react-bootstrap";
+import axios from "axios";
 
 import NewAnswer from "./newAnswer.jsx";
 //the form you have two initial fields,
@@ -44,12 +45,12 @@ const NewQuestion = () => {
   useEffect(() => {
     const getQuiz = async () => {
       const quizQuestions = await axios.get("/api/questions");
-      const questions = quizQuestions.data
+      const questions = quizQuestions.data;
 
-      console.log(questions)
-  }
-    getQuiz()}
-      , []);
+      console.log(questions);
+    };
+    getQuiz();
+  }, []);
 
   return (
     <>
@@ -68,7 +69,7 @@ const NewQuestion = () => {
           </BUTTON>
           {!newAnswer && (
             <BUTTON
-              style={{ "marginLeft": "560px" }}
+              style={{ marginLeft: "560px" }}
               onClick={() => console.log("patch / post new question data")}
             >
               Save Changes
