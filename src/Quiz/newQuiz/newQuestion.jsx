@@ -42,8 +42,14 @@ const NewQuestion = () => {
   };
 
   useEffect(() => {
-    console.log("answers", answers);
-  }, [answers]);
+    const getQuiz = async () => {
+      const quizQuestions = await axios.get("/api/questions");
+      const questions = quizQuestions.data
+
+      console.log(questions)
+  }
+    getQuiz()}
+      , []);
 
   return (
     <>
