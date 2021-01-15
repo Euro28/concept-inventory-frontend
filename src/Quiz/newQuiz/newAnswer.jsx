@@ -19,7 +19,7 @@ const NewAnswer = (props) => {
         className="mx-auto"
         onSubmit={(e) => {
           e.preventDefault();
-          props.addAnswer({title, misconception, correct})
+          props.addAnswer({text: title, value: misconception, correct})
         }}
       >
         <Form.Group controlId="answerTitle">

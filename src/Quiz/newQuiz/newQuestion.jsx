@@ -31,7 +31,9 @@ import NewAnswer from "./newAnswer.jsx";
 //
 const NewQuestion = () => {
   const [answers, setAnswers] = useState([]);
+  const [title, setTitle] = useState("");
   const [newAnswer, setNewAnswer] = useState(false);
+  const [questions, setQuestions] = useState(null);
 
   const addAnswer = (ans) => {
     setNewAnswer(false);
@@ -45,12 +47,25 @@ const NewQuestion = () => {
   useEffect(() => {
     const getQuiz = async () => {
       const quizQuestions = await axios.get("/api/questions");
-      const questions = quizQuestions.data;
-
+      const questions = quizQuestions.data.pages[0].elements;
       console.log(questions);
+      setQuestions(questions);
     };
     getQuiz();
   }, []);
+
+  const removeQuestion = (name) => {
+    const newQuestions = questions.filter((ques) => ques.name !== name);
+    setQuestions(newQuestions);
+  };
+
+  const addQuestion = (question) => {
+    const questionsCopy = [...questions];
+    questionsCopy.push(question);
+    setQuestions(questionsCopy);
+    setTitle("");
+    setAnswers([]);
+  };
 
   return (
     <>
@@ -62,6 +77,8 @@ const NewQuestion = () => {
               type="text"
               name="question"
               placeholder="Question..."
+              onChange={(e) => setTitle(e.target.value)}
+              value={title}
             />
           </Form.Group>
           <BUTTON onClick={() => setNewAnswer(true)} disabled={newAnswer}>
@@ -70,19 +87,44 @@ const NewQuestion = () => {
           {!newAnswer && (
             <BUTTON
               style={{ marginLeft: "560px" }}
-              onClick={() => console.log("patch / post new question data")}
+              onClick={() =>
+                addQuestion({
+                  type: "radiogroup",
+                  name: "test name",
+                  title,
+                  choices: answers,
+                  isRequired: true,
+                })
+              }
             >
               Save Changes
             </BUTTON>
           )}
         </MYFORM>
         {newAnswer && <NewAnswer addAnswer={addAnswer} />}
+        {answers.map((answer) => (
+          <li key={answer.text}>
+            {answer.value} {answer.text} {String(answer.correct)}
+          </li>
+        ))}
       </CONTAINER>
-      {answers.map((answer) => (
-        <li key={answer.title}>
-          {answer.title} {answer.misconception} {String(answer.correct)}
-        </li>
-      ))}
+      <ul>
+        {questions &&
+          questions
+            .filter(
+              (ques) => ques.type === "checkbox" || ques.type === "radiogroup"
+            )
+            .map((ques) => {
+              return (
+                <li key={ques.name}>
+                  {ques.name}- {ques.title}
+                  <Button onClick={() => removeQuestion(ques.name)}>
+                    Remove me
+                  </Button>
+                </li>
+              );
+            })}
+      </ul>
     </>
   );
 };
