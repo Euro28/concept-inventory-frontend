@@ -1,16 +1,22 @@
 import React from "react";
 
-const enteredAnswers = (props) => {
+import { ListGroup } from "react-bootstrap";
 
+const enteredAnswers = (props) => {
   return (
     <>
-    {props.answers.map((answer) => (
-      <li key={answer.text}>
-      {answer.value}- {answer.text} {String(answer.correct)}
-      </li>
-    ))}
+      <ListGroup>
+        {props.answers.map((answer) => (
+          <ListGroup.Item
+            key={answer.text}
+            variant={answer.correct ? "success" : "danger"}
+          >
+            {answer.text}
+          </ListGroup.Item>
+        ))}
+      </ListGroup>
     </>
-  )
-}
+  );
+};
 
 export default enteredAnswers;

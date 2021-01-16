@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { BUTTON, MYFORM, CONTAINER } from "./newQuestionComponents.js";
-import { Form, Button } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 //the form for adding a new answer should have 3 fields
 //the first field is display answer
@@ -10,7 +10,6 @@ import { Form, Button } from "react-bootstrap";
 
 const NewAnswer = (props) => {
   const [title, setTitle] = useState("");
-  const [misconception, setMisconception] = useState("");
   const [correct, setCorrect] = useState(false);
 
   return (
@@ -19,7 +18,11 @@ const NewAnswer = (props) => {
         className="mx-auto"
         onSubmit={(e) => {
           e.preventDefault();
-          props.addAnswer({ text: title, value: misconception, correct });
+          props.addAnswer({
+            text: title,
+            value: `${title.substr(0,10)}-${Math.floor(Math.random() * 100)}`,
+            correct,
+          });
         }}
       >
         <Form.Group controlId="answerTitle">
@@ -30,17 +33,6 @@ const NewAnswer = (props) => {
             placeholder="answer"
             onChange={(e) => setTitle(e.target.value)}
           />
-        </Form.Group>
-        <Form.Group controlId="answerConcepts">
-          <Form.Label> Misconception: </Form.Label>
-          <Form.Control
-            as="select"
-            defaultValue="Choose..."
-            onChange={(e) => setMisconception(e.target.value)}
-          >
-            <option>Choose...</option>
-            <option>Conjunction</option>
-          </Form.Control>
         </Form.Group>
         <Form.Group id="correctCheckbox">
           <Form.Check
