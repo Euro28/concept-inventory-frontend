@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import * as Survey from "survey-react";
 
 const Quiz = (props) => {
-  // const [quiz, setQuiz] = useState({})
   const [resultPage, setResultPage] = useState(false);
   const [error, setError] = useState("");
   const [questions, setQuestions] = useState({});
@@ -12,7 +11,7 @@ const Quiz = (props) => {
     const getQuestions = async () => {
       try {
         const questionsAPI = await axios.get("/api/questions");
-        setQuestions(questionsAPI.data[0])
+        setQuestions(questionsAPI.data[0]);
       } catch (err) {
         setError("couldnt retrieve questions please contact euro");
       }
@@ -20,6 +19,7 @@ const Quiz = (props) => {
 
     getQuestions();
   }, []);
+
   const storeData = async (quizResults) => {
     try {
       await axios.post("/api/results", {
