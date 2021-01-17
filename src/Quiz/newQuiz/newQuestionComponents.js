@@ -50,6 +50,7 @@ const QuestionInput = (props) => {
           name="question"
           placeholder="Question..."
           onChange={(e) => props.setTitle(e.target.value)}
+          value={props.title}
         />
       </Form.Group>
 
@@ -59,6 +60,7 @@ const QuestionInput = (props) => {
           as="select"
           defaultValue="Choose..."
           onChange={(e) => props.setMisconception(e.target.value)}
+          value={props.misconception}
         >
           <option>Choose...</option>
           {props.concepts.map((concpt) => (

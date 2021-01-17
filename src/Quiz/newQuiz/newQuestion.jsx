@@ -6,7 +6,7 @@ import {
   QuestionInput,
   NewConcept,
 } from "./newQuestionComponents.js";
-import { Button } from "react-bootstrap";
+import { Button, Alert } from "react-bootstrap";
 import axios from "axios";
 
 import NewAnswer from "./newAnswer.jsx";
@@ -28,6 +28,8 @@ const NewQuestion = () => {
   const [concepts, setConcepts] = useState([]);
   const [newAnswer, setNewAnswer] = useState(false);
   const [questions, setQuestions] = useState(null);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const addAnswer = (ans) => {
     setNewAnswer(false);
@@ -48,7 +50,10 @@ const NewQuestion = () => {
         const concepts = await axios.get("/api/concepts");
         setConcepts(concepts.data);
       } catch (err) {
-        console.log(err);
+        setError("Could not retrieve quiz information");
+        setTimeout(() => {
+          setError("");
+        }, 2000);
       }
     };
     getQuiz();
@@ -57,6 +62,7 @@ const NewQuestion = () => {
   const removeQuestion = (title) => {
     const newQuestions = questions.filter((ques) => ques.title !== title);
     setQuestions(newQuestions);
+    //make request to remove it
   };
 
   const addQuestion = async (question) => {
@@ -65,12 +71,23 @@ const NewQuestion = () => {
     setQuestions(questionsCopy);
 
     try {
-      const newQuestions = await axios.patch("/api/questions", {
+      await axios.patch("/api/questions", {
         question,
         title: "Propositional Logic",
       });
+
+      setAnswers([]);
+      setTitle("");
+      setMisconception("Choose...");
+      setSuccess("Question");
+      setTimeout(() => {
+        setSuccess("");
+      }, 2000);
     } catch (err) {
-      console.log(err);
+      setError("Could not add question, have you added a misconception?");
+      setTimeout(() => {
+        setError("");
+      }, 2000);
     }
   };
 
@@ -81,7 +98,13 @@ const NewQuestion = () => {
     try {
       const newConcepts = await axios.patch("/api/concepts", { concept });
     } catch (err) {
-      console.log(err);
+      setError(
+        "Could not add new concept, it already exists, or you have not added an explanation"
+      );
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+
     }
   };
 
@@ -92,6 +115,8 @@ const NewQuestion = () => {
           <QuestionInput
             setTitle={setTitle}
             setMisconception={setMisconception}
+            title={title}
+            misconception={misconception}
             concepts={concepts}
           />
           <BUTTON
@@ -135,6 +160,10 @@ const NewQuestion = () => {
             Apply Changes
           </Button>
         </MYFORM>
+        {success && (
+          <Alert variant="success"> Successfully added {success}</Alert>
+        )}
+        {error && <Alert variant="danger"> {error} </Alert>}
         {newAnswer && <NewAnswer addAnswer={addAnswer} />}
         {newConcept && <NewConcept addConcept={addConcept} />}
         <EnteredAnswers answers={answers} />
