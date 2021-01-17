@@ -12,7 +12,7 @@ const Quiz = (props) => {
     const getQuestions = async () => {
       try {
         const questionsAPI = await axios.get("/api/questions");
-        setQuestions(questionsAPI.data);
+        setQuestions(questionsAPI.data[0]);
       } catch (err) {
         setError("couldnt retrieve questions please contact euro");
       }
@@ -20,6 +20,7 @@ const Quiz = (props) => {
 
     getQuestions();
   }, []);
+
   const storeData = async (quizResults) => {
     try {
       await axios.post("/api/results", {

@@ -8,7 +8,7 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-import Register from "./register.jsx"
+import Register from "./register.jsx";
 import LoginToolbar from "./loginToolbar.jsx";
 
 const Login = () => {
@@ -17,7 +17,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
-  
+
   useEffect(() => {
     const loggedIn = async () => {
       try {
@@ -44,7 +44,7 @@ const Login = () => {
       const user = await axios.post("/api/login", { name });
       setLoading(false);
       if (user.status === 200) {
-        Cookies.set("name", name);
+        Cookies.set("name", name, { sameSite: "None", secure: true });
         logIn();
       } else {
         setError(true);
