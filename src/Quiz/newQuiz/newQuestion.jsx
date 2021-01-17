@@ -59,9 +59,21 @@ const NewQuestion = () => {
     getQuiz();
   }, []);
 
-  const removeQuestion = (title) => {
+  const removeQuestion = async (title) => {
     const newQuestions = questions.filter((ques) => ques.title !== title);
     setQuestions(newQuestions);
+
+    try {
+      await axios.patch("/api/questions/remove", {
+        quizTitle: "Propositional Logic",
+        title,
+      });
+    } catch (err) {
+      setError("could not remove question with title : ", title);
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+    }
     //make request to remove it
   };
 
@@ -104,7 +116,6 @@ const NewQuestion = () => {
       setTimeout(() => {
         setError("");
       }, 2000);
-
     }
   };
 
