@@ -20,7 +20,9 @@ const NewAnswer = (props) => {
           e.preventDefault();
           props.addAnswer({
             text: title,
-            value: `${title.substr(0,10)}-${Math.floor(Math.random() * 100)}`,
+            value: `${title.substr(0, 10)}-${Math.floor(
+              Math.random() * 10000
+            )}`,
             correct,
           });
         }}

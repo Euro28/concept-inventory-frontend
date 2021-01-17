@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { BUTTON, MYFORM, CONTAINER } from "./newQuestionComponents.js";
-import { Form } from "react-bootstrap";
+import {
+  BUTTON,
+  MYFORM,
+  CONTAINER,
+  QuestionInput,
+  NewConcept,
+} from "./newQuestionComponents.js";
+import { Button, Alert } from "react-bootstrap";
 import axios from "axios";
 
 import NewAnswer from "./newAnswer.jsx";
@@ -18,8 +24,12 @@ const NewQuestion = () => {
   const [answers, setAnswers] = useState([]);
   const [title, setTitle] = useState("");
   const [misconception, setMisconception] = useState("");
+  const [newConcept, setNewConcept] = useState(false);
+  const [concepts, setConcepts] = useState([]);
   const [newAnswer, setNewAnswer] = useState(false);
   const [questions, setQuestions] = useState(null);
+  const [success, setSuccess] = useState("");
+  const [error, setError] = useState("");
 
   const addAnswer = (ans) => {
     setNewAnswer(false);
@@ -32,84 +42,144 @@ const NewQuestion = () => {
 
   useEffect(() => {
     const getQuiz = async () => {
-      const quizQuestions = await axios.get("/api/questions");
-      const questions = quizQuestions.data[0].pages[0].elements;
-      console.log(questions);
-      setQuestions(questions);
+      try {
+        const quizQuestions = await axios.get("/api/questions");
+        const questions = quizQuestions.data[0].pages[0].elements;
+        setQuestions(questions);
+
+        const concepts = await axios.get("/api/concepts");
+        setConcepts(concepts.data);
+      } catch (err) {
+        setError("Could not retrieve quiz information");
+        setTimeout(() => {
+          setError("");
+        }, 2000);
+      }
     };
     getQuiz();
   }, []);
 
-  const removeQuestion = (title) => {
+  const removeQuestion = async (title) => {
     const newQuestions = questions.filter((ques) => ques.title !== title);
     setQuestions(newQuestions);
+
+    try {
+      await axios.patch("/api/questions/remove", {
+        quizTitle: "Propositional Logic",
+        title,
+      });
+    } catch (err) {
+      setError("could not remove question with title : ", title);
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+    }
+    //make request to remove it
   };
 
-  const addQuestion = (question) => {
+  const addQuestion = async (question) => {
     const questionsCopy = [...questions];
     questionsCopy.push(question);
     setQuestions(questionsCopy);
-    setTitle("");
-    setAnswers([]);
+
+    try {
+      await axios.patch("/api/questions", {
+        question,
+        title: "Propositional Logic",
+      });
+
+      setAnswers([]);
+      setTitle("");
+      setMisconception("Choose...");
+      setSuccess("Question");
+      setTimeout(() => {
+        setSuccess("");
+      }, 2000);
+    } catch (err) {
+      setError("Could not add question, have you added a misconception?");
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+    }
   };
 
-  //question needs
-  //choices - the object will need value+text fields
-  //isRequired - DONE
-  //correctAnswer - DONE
-  //name - DONE
-  //title - DONE
-  //type - DONE
-  //valueName - this is the misconception
+  const addConcept = async (concept) => {
+    const conceptsCopy = [...concepts];
+    conceptsCopy.push(concept);
+    setConcepts(conceptsCopy);
+    try {
+      const newConcepts = await axios.patch("/api/concepts", { concept });
+    } catch (err) {
+      setError(
+        "Could not add new concept, it already exists, or you have not added an explanation"
+      );
+      setTimeout(() => {
+        setError("");
+      }, 2000);
+    }
+  };
 
   return (
     <>
       <CONTAINER>
         <MYFORM className="mx-auto">
-          <Form.Group controlId="questionName">
-            <Form.Label> Question: </Form.Label>
-            <Form.Control
-              type="text"
-              name="question"
-              placeholder="Question..."
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
-            />
-          </Form.Group>
-
-          <Form.Group controlId="questionMisconception">
-            <Form.Label> Question Misconception: </Form.Label>
-            <Form.Control
-              as="select"
-              defaultValue="Choose..."
-              onChange={(e) => setMisconception(e.target.value)}
-            >
-            <option>Choose...</option>
-            <option> conjunction </option>
-    </Form.Control>
-          </Form.Group>
-          <BUTTON onClick={() => setNewAnswer(true)} disabled={newAnswer}>
+          <QuestionInput
+            setTitle={setTitle}
+            setMisconception={setMisconception}
+            title={title}
+            misconception={misconception}
+            concepts={concepts}
+          />
+          <BUTTON
+            onClick={() => setNewConcept(!newConcept)}
+            disabled={newAnswer}
+          >
+            Add Concept
+          </BUTTON>
+          <BUTTON
+            onClick={() => setNewAnswer(!newAnswer)}
+            style={{ marginLeft: "30px" }}
+            disabled={newConcept}
+          >
             Add an answer
           </BUTTON>
-          {!newAnswer && (
+          {!(newAnswer || newConcept) && (
             <BUTTON
-              style={{ marginLeft: "560px" }}
+              style={{ marginLeft: "30px" }}
               onClick={() =>
                 addQuestion({
-                  correctAnswer: answers.filter((ans) => ans.correct)[0].value,
-                  type: "radiogroup",
-                  name: `question ${questions.length + 5}`,
+                  correctAnswer: answers
+                    .filter((ans) => ans.correct)
+                    .map((ans) => ans.value),
+                  type: "checkbox",
+                  name: `question ${questions.length + 100}`,
                   title,
-                  choices: answers,
+                  valueName: `${misconception}-${Math.floor(
+                    Math.random() * Math.floor(10000)
+                  )}`,
+                  misconception: misconception,
+                  choices: answers.map(({ text, value }) => ({ text, value })),
                   isRequired: true,
                 })
               }
             >
-              Save Changes
+              Save Question
             </BUTTON>
           )}
+          <Button
+            onClick={() => console.log("patching quiz")}
+            style={{ marginLeft: "225px" }}
+            variant="success"
+          >
+            Apply Changes
+          </Button>
         </MYFORM>
+        {success && (
+          <Alert variant="success"> Successfully added {success}</Alert>
+        )}
+        {error && <Alert variant="danger"> {error} </Alert>}
         {newAnswer && <NewAnswer addAnswer={addAnswer} />}
+        {newConcept && <NewConcept addConcept={addConcept} />}
         <EnteredAnswers answers={answers} />
       </CONTAINER>
       <CurrentQuestions questions={questions} removeQuestion={removeQuestion} />

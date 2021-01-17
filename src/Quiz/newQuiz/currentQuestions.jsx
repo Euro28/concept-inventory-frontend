@@ -13,7 +13,7 @@ const CurrentQuestions = (props) => {
             )
             .map((ques) => (
               <ListGroup.Item key={ques.title}>
-                <div style={{ "maxWidth": "700px" }}>{ques.title}</div>
+                <div style={{ maxWidth: "700px" }}>{ques.title}</div>
                 <Button
                   style={{ float: "right" }}
                   variant="danger"

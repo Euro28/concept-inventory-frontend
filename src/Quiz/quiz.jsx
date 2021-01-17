@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import * as Survey from "survey-react";
 
 const Quiz = (props) => {
-  // const [quiz, setQuiz] = useState({})
   const [resultPage, setResultPage] = useState(false);
   const [error, setError] = useState("");
   const [questions, setQuestions] = useState({});
