@@ -9,6 +9,7 @@ const Results = () => {
   const [quizResults, setQuizResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [conceptsExplanations, setConceptExplanations] = useState([]);
 
   const sameArr = (correct, given) => {
     const diff = array.intersection(correct, given);
@@ -21,6 +22,9 @@ const Results = () => {
         setLoading(true);
         const results = await axios.get("/api/results");
         const questions = await axios.get("/api/questions");
+
+        const allConcepts = await axios.get("/api/concepts");
+        setConceptExplanations(allConcepts.data);
 
         const correct = questions.data[0].pages[0].elements.map((question) => ({
           misconception: question.misconception,
@@ -39,7 +43,6 @@ const Results = () => {
           if (ans.correct) count[ans.misconception].correct++;
         });
 
-        console.log(count);
         setQuizResults(count);
         setLoading(false);
       } catch (err) {
@@ -57,6 +60,7 @@ const Results = () => {
           key={concept}
           title={concept}
           score={quizResults[concept]}
+          explanation={conceptsExplanations[concept]}
         />
       ))}
     </div>

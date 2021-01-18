@@ -13,7 +13,7 @@ const ConceptResult = (props) => {
         </p>
       </Modal.Body>
 
-      <Modal.Footer>Footer</Modal.Footer>
+      <Modal.Footer>{props.explanation}</Modal.Footer>
     </Modal.Dialog>
   );
 };
