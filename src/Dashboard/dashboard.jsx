@@ -14,6 +14,7 @@ const Dashboard = () => {
   useEffect(() => {
     const loggedIn = async () => {
       const user = await axios.post("/api/login");
+      console.log(user.data.user);
       if (user.status === 200) {
         setUser(user.data.user);
       }

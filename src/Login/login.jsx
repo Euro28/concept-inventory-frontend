@@ -44,7 +44,7 @@ const Login = () => {
       const user = await axios.post("/api/login", { name });
       setLoading(false);
       if (user.status === 200) {
-        Cookies.set("name", name, { sameSite: "None", secure: true });
+        Cookies.set("name", name);
         logIn();
       } else {
         setError(true);
