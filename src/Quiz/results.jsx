@@ -11,39 +11,17 @@ const Results = () => {
   const [error, setError] = useState("");
   const [conceptsExplanations, setConceptExplanations] = useState([]);
 
-  const sameArr = (correct, given) => {
-    const diff = array.intersection(correct, given);
-    return diff.length === correct.length && correct.length === given.length;
-  };
-
   useEffect(() => {
     const fetchResults = async () => {
       try {
         setLoading(true);
+
         const results = await axios.get("/api/results");
-        const questions = await axios.get("/api/questions");
-
         const allConcepts = await axios.get("/api/concepts");
+
         setConceptExplanations(allConcepts.data);
+        setQuizResults(results);
 
-        const correct = questions.data[0].pages[0].elements.map((question) => ({
-          misconception: question.misconception,
-          correct: sameArr(question.correctAnswer, results[question.valueName]),
-        }));
-
-        const concepts = array.uniq(correct.map((ques) => ques.misconception));
-        const count = {};
-
-        concepts.forEach(
-          (concept) => (count[concept] = { total: 0, correct: 0 })
-        );
-
-        correct.forEach((ans) => {
-          count[ans.misconception].total++;
-          if (ans.correct) count[ans.misconception].correct++;
-        });
-
-        setQuizResults(count);
         setLoading(false);
       } catch (err) {
         setError(err);
