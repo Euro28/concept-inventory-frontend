@@ -22,9 +22,11 @@ const Quiz = (props) => {
 
   const storeData = async (quizResults) => {
     try {
-      await axios.post("/api/results", {
+      console.log(quizResults);
+      const results = await axios.post("/api/results", {
         results: quizResults,
       });
+
       await axios.patch("/api/takenQuiz");
     } catch (err) {
       setError(
@@ -36,6 +38,7 @@ const Quiz = (props) => {
   const Results = (data) => (
     <main>
       <h1> Results page </h1>
+      {error ? error : null}
     </main>
   );
 

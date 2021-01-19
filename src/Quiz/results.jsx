@@ -1,5 +1,4 @@
 import axios from "axios";
-import array from "lodash/array";
 import React, { useEffect, useState } from "react";
 
 import Spinner from "./Spinner.jsx";
@@ -20,7 +19,7 @@ const Results = () => {
         const allConcepts = await axios.get("/api/concepts");
 
         setConceptExplanations(allConcepts.data);
-        setQuizResults(results);
+        setQuizResults(results.data);
 
         setLoading(false);
       } catch (err) {
