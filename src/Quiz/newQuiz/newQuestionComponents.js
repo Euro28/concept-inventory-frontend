@@ -63,8 +63,8 @@ const QuestionInput = (props) => {
           value={props.misconception}
         >
           <option>Choose...</option>
-          {props.concepts.map((concpt) => (
-            <option key={concpt.concept}> {concpt.concept} </option>
+          {Object.keys(props.concepts).map((concpt) => (
+            <option key={concpt}> {concpt} </option>
           ))}
         </Form.Control>
       </Form.Group>

@@ -12,13 +12,7 @@ import axios from "axios";
 import NewAnswer from "./newAnswer.jsx";
 import EnteredAnswers from "./enteredAnswers.jsx";
 import CurrentQuestions from "./currentQuestions.jsx";
-//the form you have two initial fields,
-//first is the question name
-//the second is a button which says add a new answer
-//
-//if the user types in misconception field the correct checkbox should be disabled
-//if the user ticks the correct checkbox the misconception field should be cleared and
-//disabled
+import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
 
 const NewQuestion = () => {
   const [answers, setAnswers] = useState([]);
@@ -104,11 +98,15 @@ const NewQuestion = () => {
   };
 
   const addConcept = async (concept) => {
-    const conceptsCopy = [...concepts];
-    conceptsCopy.push(concept);
-    setConcepts(conceptsCopy);
+    setConcepts({ ...concepts, [concept.concept]: concept.explanation });
+
     try {
-      const newConcepts = await axios.patch("/api/concepts", { concept });
+      await axios.patch("/api/concepts", { concept });
+      setNewConcept(false);
+      setSuccess(`Concept '${concept.concept}'`);
+      setTimeout(() => {
+        setSuccess("");
+      }, 2000);
     } catch (err) {
       setError(
         "Could not add new concept, it already exists, or you have not added an explanation"
@@ -121,6 +119,7 @@ const NewQuestion = () => {
 
   return (
     <>
+      <Toolbar />
       <CONTAINER>
         <MYFORM className="mx-auto">
           <QuestionInput
@@ -145,7 +144,7 @@ const NewQuestion = () => {
           </BUTTON>
           {!(newAnswer || newConcept) && (
             <BUTTON
-              style={{ marginLeft: "30px" }}
+              style={{ marginLeft: "370px" }}
               onClick={() =>
                 addQuestion({
                   correctAnswer: answers
@@ -166,13 +165,6 @@ const NewQuestion = () => {
               Save Question
             </BUTTON>
           )}
-          <Button
-            onClick={() => console.log("patching quiz")}
-            style={{ marginLeft: "225px" }}
-            variant="success"
-          >
-            Apply Changes
-          </Button>
         </MYFORM>
         {success && (
           <Alert variant="success"> Successfully added {success}</Alert>

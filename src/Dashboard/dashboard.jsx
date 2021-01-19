@@ -29,28 +29,27 @@ const Dashboard = () => {
   return (
     <div>
       <DashboardToolbar logout={logout} />
-      {!user.takenQuiz ? (
+      {!user.isAdmin && !user.takenQuiz ? (
         <Link to={"/takeQuiz"}>
           <Button variant="primary" size="lg" block>
             Take concept inventory
           </Button>
         </Link>
-      ) : (
-        <Button variant="secondary" size="lg" block disabled>
-          You have already taken the concept inventory
-        </Button>
+      ) : null}
+      {user.takenQuiz && (
+        <Link to={"/results"}>
+          <Button variant="success" size="lg" block>
+            View Results
+          </Button>
+        </Link>
       )}
-      <Link to={"/results"}>
-        <Button variant="success" size="lg" block>
-          View Results
-        </Button>
-      </Link>
-      <Link to={"/makeQuiz"}>
-        <Button variant="dark" size="lg" block>
-          Create Concept Inventory
-        </Button>
-      </Link>
-      Thank you for taking the concept inventory !
+      {user.isAdmin && (
+        <Link to={"/makeQuiz"}>
+          <Button variant="info" size="lg" block>
+            Edit Concept Inventory
+          </Button>
+        </Link>
+      )}
     </div>
   );
 };

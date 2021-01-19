@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 import Spinner from "./Spinner.jsx";
 import ConceptResult from "./ConceptResult.jsx";
+import Toolbar from "../Dashboard/dashboardToolbar.jsx";
 
 const Results = () => {
   const [quizResults, setQuizResults] = useState([]);
@@ -43,7 +44,12 @@ const Results = () => {
     </div>
   );
 
-  return <>{loading ? <Spinner /> : results}</>;
+  return (
+    <>
+      <Toolbar />
+      {loading ? <Spinner /> : results}
+    </>
+  );
 };
 
 export default Results;

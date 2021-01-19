@@ -1,11 +1,16 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import * as Survey from "survey-react";
+
+import Results from "./results.jsx";
 
 const Quiz = (props) => {
   const [resultPage, setResultPage] = useState(false);
   const [error, setError] = useState("");
   const [questions, setQuestions] = useState({});
+
+  const history = useHistory();
 
   useEffect(() => {
     const getQuestions = async () => {
@@ -22,43 +27,31 @@ const Quiz = (props) => {
 
   const storeData = async (quizResults) => {
     try {
-      console.log(quizResults);
+      history.replace("/dashboard");
       const results = await axios.post("/api/results", {
         results: quizResults,
       });
 
       await axios.patch("/api/takenQuiz");
+
     } catch (err) {
       setError(
         "couldn't post results of quiz, could you please take it again sorry :("
       );
     }
   };
-  //make this a separate file
-  const Results = (data) => (
-    <main>
-      <h1> Results page </h1>
-      {error ? error : null}
-    </main>
-  );
 
   return (
-    <>
-      {resultPage ? (
-        Results()
-      ) : (
-        <div>
-          <Survey.Survey
-            showCompletedPage={false}
-            onComplete={(data) => {
-              storeData(data.valuesHash);
-              setResultPage(true);
-            }}
-            json={questions}
-          />
-        </div>
-      )}
-    </>
+    <div>
+      <Survey.Survey
+        showCompletedPage={false}
+        onComplete={(data) => {
+          storeData(data.valuesHash);
+          setResultPage(true);
+        }}
+        json={questions}
+      />
+    </div>
   );
 };
 
