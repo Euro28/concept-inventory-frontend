@@ -8,7 +8,6 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Spinner from "react-bootstrap/Spinner";
 
-import Register from "./register.jsx";
 import LoginToolbar from "./loginToolbar.jsx";
 
 const Login = () => {

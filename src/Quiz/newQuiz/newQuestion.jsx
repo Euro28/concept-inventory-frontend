@@ -6,7 +6,7 @@ import {
   QuestionInput,
   NewConcept,
 } from "./newQuestionComponents.js";
-import { Button, Alert } from "react-bootstrap";
+import Alert from "react-bootstrap/Alert";
 import axios from "axios";
 
 import NewAnswer from "./newAnswer.jsx";

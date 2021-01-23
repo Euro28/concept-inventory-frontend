@@ -8,7 +8,6 @@ import Toolbar from "../Dashboard/dashboardToolbar.jsx";
 const Results = () => {
   const [quizResults, setQuizResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const [conceptsExplanations, setConceptExplanations] = useState([]);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const Results = () => {
 
         setLoading(false);
       } catch (err) {
-        setError(err);
+        console.log(err);
       }
     };
 

@@ -3,11 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import * as Survey from "survey-react";
 
-import Results from "./results.jsx";
-
-const Quiz = (props) => {
-  const [resultPage, setResultPage] = useState(false);
-  const [error, setError] = useState("");
+const Quiz = () => {
   const [questions, setQuestions] = useState({});
 
   const history = useHistory();
@@ -18,7 +14,7 @@ const Quiz = (props) => {
         const questionsAPI = await axios.get("/api/questions");
         setQuestions(questionsAPI.data[0]);
       } catch (err) {
-        setError("couldnt retrieve questions please contact euro");
+        console.log(err);
       }
     };
 
@@ -27,7 +23,7 @@ const Quiz = (props) => {
 
   const storeData = async (quizResults) => {
     try {
-      const results = await axios.post("/api/results", {
+      await axios.post("/api/results", {
         results: quizResults,
       });
 
@@ -35,9 +31,7 @@ const Quiz = (props) => {
 
       history.replace("/dashboard");
     } catch (err) {
-      setError(
-        "couldn't post results of quiz, could you please take it again sorry :("
-      );
+      console.log(err);
     }
   };
 
@@ -47,7 +41,6 @@ const Quiz = (props) => {
         showCompletedPage={false}
         onComplete={(data) => {
           storeData(data.valuesHash);
-          setResultPage(true);
         }}
         json={questions}
       />
