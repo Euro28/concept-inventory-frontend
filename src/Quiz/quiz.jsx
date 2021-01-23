@@ -27,13 +27,13 @@ const Quiz = (props) => {
 
   const storeData = async (quizResults) => {
     try {
-      history.replace("/dashboard");
       const results = await axios.post("/api/results", {
         results: quizResults,
       });
 
       await axios.patch("/api/takenQuiz");
 
+      history.replace("/dashboard");
     } catch (err) {
       setError(
         "couldn't post results of quiz, could you please take it again sorry :("
