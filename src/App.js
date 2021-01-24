@@ -5,7 +5,11 @@ import Dashboard from "./Dashboard/dashboard.jsx";
 import Quiz from "./Quiz/quiz.jsx";
 import Results from "./Quiz/results.jsx";
 import MakeQuiz from "./Quiz/newQuiz/newQuestion.jsx"
-import { Redirect, Route, Switch } from "react-router-dom";
+import {
+  Redirect,
+  Route,
+  Switch
+} from "react-router-dom";
 
 function App() {
   return (

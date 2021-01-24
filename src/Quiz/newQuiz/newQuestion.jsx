@@ -151,7 +151,9 @@ const NewQuestion = () => {
                     .filter((ans) => ans.correct)
                     .map((ans) => ans.value),
                   type: "checkbox",
-                  name: `question ${questions.length + 100}`,
+                  name: `question ${questions.length} ${Math.floor(
+                    Math.random() * Math.floor(10000)
+                  )}`,
                   title,
                   valueName: `${misconception}-${Math.floor(
                     Math.random() * Math.floor(10000)

@@ -7,7 +7,7 @@ import LoginToolbar from "./loginToolbar.jsx";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 
-const Register = (props) => {
+const Register = () => {
   const [name, setName] = useState("");
   const [alert, setAlert] = useState("");
 

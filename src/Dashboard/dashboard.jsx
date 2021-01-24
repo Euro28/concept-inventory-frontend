@@ -7,7 +7,6 @@ import DashboardToolbar from "./dashboardToolbar.jsx";
 import Button from "react-bootstrap/Button";
 
 const Dashboard = () => {
-  //retrieve the user from given id and check if they have taklen quiz if they have then dont let them takd quiz again
   const history = useHistory();
   const [user, setUser] = useState({});
 
