@@ -23,10 +23,10 @@ const Quiz = () => {
 
   const storeData = async (quizResults) => {
     try {
-      await axios.post("/api/results", {
+      const results = await axios.post("/api/results", {
         results: quizResults,
       });
-
+      console.log(quizResults);
       await axios.patch("/api/takenQuiz");
 
       history.replace("/dashboard");
