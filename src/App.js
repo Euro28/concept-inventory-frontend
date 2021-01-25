@@ -5,6 +5,7 @@ import Dashboard from "./Dashboard/dashboard.jsx";
 import Quiz from "./Quiz/quiz.jsx";
 import Results from "./Quiz/results.jsx";
 import MakeQuiz from "./Quiz/newQuiz/newQuestion.jsx"
+import AllResults from "./Results/allResults.jsx"
 import {
   Redirect,
   Route,
@@ -21,6 +22,7 @@ function App() {
         <Route exact path="/takeQuiz" component={Quiz} />
         <Route exact path="/results" component={Results} />
         <Route exact path="/makeQuiz" component={MakeQuiz} />
+        <Route exact path="/allResults" component={AllResults}/>
         <Redirect from="/" to="/" />
       </Switch>
     </div>

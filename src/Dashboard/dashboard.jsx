@@ -34,13 +34,20 @@ const Dashboard = () => {
           {user.takenQuiz ? "Already Taken quiz" : "Propositional Logic Concept Test"}
         </Button>
       </Link>
-      <Link to={"/results"}>
-        <Button variant="success" size="lg" block disabled={!user.takenQuiz}>
-          {!user.takenQuiz
-            ? "Take test first to be able to view results"
-            : "View Results"}
-        </Button>
-      </Link>
+
+      {user.isAdmin ? (
+        <Link to={"/allResults"}>
+          <Button variant="success" size="lg" block>
+            View all results
+          </Button> </Link> ):
+            <Link to={"/results"}>
+              <Button variant="success" size="lg" block disabled={!user.takenQuiz}>
+                {!user.takenQuiz
+                  ? "Take test first to be able to view results"
+                  : "View Results"}
+              </Button>
+            </Link>
+      }
       {user.isAdmin && (
         <Link to={"/makeQuiz"}>
           <Button variant="info" size="lg" block>

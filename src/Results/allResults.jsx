@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
 
-const allResults = () => {
+const AllResults = () => {
   const [results, setResults] = useState([])
 
   useEffect(() => {
     const getALlResults = async () => {
       try {
-        const results = await axios.get("/api/allResults")
-        setResults(resuts.data);
+        const res = await axios.get("/api/allResults")
+        console.log(res)
+        setResults(res.data);
       } catch (err) {
         console.log(err);
       }
@@ -21,4 +22,4 @@ const allResults = () => {
   )
 }
 
-export default allResults;
+export default AllResults;
