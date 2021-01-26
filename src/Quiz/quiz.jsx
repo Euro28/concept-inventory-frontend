@@ -2,17 +2,21 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import * as Survey from "survey-react";
+import Spinner from "./Spinner.jsx";
 
 const Quiz = () => {
   const [questions, setQuestions] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const history = useHistory();
 
   useEffect(() => {
     const getQuestions = async () => {
       try {
+        setLoading(true);
         const questionsAPI = await axios.get("/api/questions");
         setQuestions(questionsAPI.data[0]);
+        setLoading(false);
       } catch (err) {
         console.log(err);
       }
@@ -23,11 +27,12 @@ const Quiz = () => {
 
   const storeData = async (quizResults) => {
     try {
-      const results = await axios.post("/api/results", {
+      setLoading(true)
+      await axios.post("/api/results", {
         results: quizResults,
       });
-      console.log(quizResults);
       await axios.patch("/api/takenQuiz");
+      setLoading(false);
 
       history.replace("/dashboard");
     } catch (err) {
@@ -37,13 +42,17 @@ const Quiz = () => {
 
   return (
     <div>
-      <Survey.Survey
-        showCompletedPage={false}
-        onComplete={(data) => {
-          storeData(data.valuesHash);
-        }}
-        json={questions}
-      />
+      {loading ? (
+        <Spinner />
+      ) : (
+        <Survey.Survey
+          showCompletedPage={false}
+          onComplete={(data) => {
+            storeData(data.valuesHash);
+          }}
+          json={questions}
+        />
+      )}
     </div>
   );
 };

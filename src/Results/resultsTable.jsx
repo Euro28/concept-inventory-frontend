@@ -9,11 +9,14 @@ const ResultsTable = (props) => {
   useEffect(() => {
     const concepts = [];
 
+    console.log(props.results);
+
     props.results.forEach((user) => {
       Object.keys(user.results).forEach((misconception) =>
         concepts.push(misconception)
       );
     });
+    console.log([...new Set(concepts)]);
     setUniqueConcepts([...new Set(concepts)]);
   }, [props.results]);
 
@@ -30,6 +33,19 @@ const ResultsTable = (props) => {
           </tr>
         </thead>
         <tbody>
+          {props.results
+            .filter((user) => user.name.includes(nameFilter))
+            .map((user, idx) => {
+              return (
+                <tr key={user.name}>
+                  <td>{idx}</td>
+                  <td>{user.name}</td>
+                  {uniqueConcepts.map((concept) => {
+                    return <td>{user.results["Negation"].correct}</td>;
+                  })}
+                </tr>
+              );
+            })}
           {props.results
             .filter((user) => user.name.includes(nameFilter))
             .map((user, idx) => {
@@ -68,6 +84,7 @@ const ResultsTable = (props) => {
           </Form.Group>
         </Form>
       </div>
+      {JSON.stringify(props.results)}
     </>
   );
 };
