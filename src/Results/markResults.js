@@ -1,5 +1,4 @@
 import array from "lodash/array";
-import axios from "axios";
 
 const correctAns = (correct, given) => {
   const diff = array.intersection(correct, given);

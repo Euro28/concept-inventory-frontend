@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
-import markResults from "./markResults.js";
 
 const ResultsTable = (props) => {
   const [nameFilter, setNameFilter] = useState("");

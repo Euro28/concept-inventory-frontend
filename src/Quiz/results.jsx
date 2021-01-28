@@ -12,7 +12,6 @@ const Results = () => {
   const [quizResults, setQuizResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [conceptsExplanations, setConceptExplanations] = useState([]);
-  const [questions, setQuestions] = useState([]);
   const [wrongAnswers, setWrongAnswers] = useState([]);
 
   const trimResults = ({ choices, explanation, title, correctAnswer }) => ({
@@ -48,7 +47,6 @@ const Results = () => {
           );
 
         setWrongAnswers(wrong);
-        setQuestions(questions.data[0].pages[0].elements);
         setQuizResults(markedResults);
         setConceptExplanations(allConcepts.data);
         setLoading(false);
