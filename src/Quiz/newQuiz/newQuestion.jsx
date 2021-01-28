@@ -7,6 +7,7 @@ import {
   NewConcept,
 } from "./newQuestionComponents.js";
 import Alert from "react-bootstrap/Alert";
+import Button from "react-bootstrap/Button";
 import axios from "axios";
 
 import NewAnswer from "./newAnswer.jsx";
@@ -24,6 +25,7 @@ const NewQuestion = () => {
   const [questions, setQuestions] = useState(null);
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
+  const [explanation, setExplanation] = useState("");
 
   const addAnswer = (ans) => {
     setNewAnswer(false);
@@ -71,14 +73,32 @@ const NewQuestion = () => {
     //make request to remove it
   };
 
-  const addQuestion = async (question) => {
+  const addQuestion = async () => {
+    const question = {
+      correctAnswer: answers
+        .filter((ans) => ans.correct)
+        .map((ans) => ans.value),
+      type: "checkbox",
+      name: `question ${questions.length} ${Math.floor(
+        Math.random() * Math.floor(10000)
+      )}`,
+      title,
+      explanation,
+      valueName: `${misconception}-${Math.floor(
+        Math.random() * Math.floor(10000)
+      )}`,
+      misconception,
+      choices: answers.map(({ text, value }) => ({ text, value })),
+      isRequired: true,
+    };
+
     const questionsCopy = [...questions];
     questionsCopy.push(question);
     setQuestions(questionsCopy);
 
     try {
       await axios.patch("/api/questions", {
-        question,
+        question: question,
         title: "Propositional Logic",
       });
 
@@ -125,47 +145,29 @@ const NewQuestion = () => {
           <QuestionInput
             setTitle={setTitle}
             setMisconception={setMisconception}
-            title={title}
-            misconception={misconception}
+            setExplanation={setExplanation}
             concepts={concepts}
           />
-          <BUTTON
+          <Button
             onClick={() => setNewConcept(!newConcept)}
             disabled={newAnswer}
           >
             Add Concept
-          </BUTTON>
-          <BUTTON
+          </Button>
+          <Button
             onClick={() => setNewAnswer(!newAnswer)}
             style={{ marginLeft: "30px" }}
             disabled={newConcept}
           >
             Add an answer
-          </BUTTON>
+          </Button>
           {!(newAnswer || newConcept) && (
-            <BUTTON
+            <Button
               style={{ marginLeft: "370px" }}
-              onClick={() =>
-                addQuestion({
-                  correctAnswer: answers
-                    .filter((ans) => ans.correct)
-                    .map((ans) => ans.value),
-                  type: "checkbox",
-                  name: `question ${questions.length} ${Math.floor(
-                    Math.random() * Math.floor(10000)
-                  )}`,
-                  title,
-                  valueName: `${misconception}-${Math.floor(
-                    Math.random() * Math.floor(10000)
-                  )}`,
-                  misconception: misconception,
-                  choices: answers.map(({ text, value }) => ({ text, value })),
-                  isRequired: true,
-                })
-              }
+              onClick={() => addQuestion()}
             >
               Save Question
-            </BUTTON>
+            </Button>
           )}
         </MYFORM>
         {success && (

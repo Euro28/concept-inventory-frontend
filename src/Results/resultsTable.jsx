@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import Form from "react-bootstrap/Form";
+import markResults from "./markResults.js";
 
 const ResultsTable = (props) => {
   const [nameFilter, setNameFilter] = useState("");
   const [uniqueConcepts, setUniqueConcepts] = useState([]);
 
   useEffect(() => {
-    const concepts = [];
 
-    console.log(props.results);
+    const uniqConcepts = props.results
+      .reduce((acc, user) => {
+        acc.push(Object.keys(user.results));
+        return acc;
+      }, [])
+      .flat();
 
-    props.results.forEach((user) => {
-      Object.keys(user.results).forEach((misconception) =>
-        concepts.push(misconception)
-      );
-    });
-    console.log([...new Set(concepts)]);
-    setUniqueConcepts([...new Set(concepts)]);
+    setUniqueConcepts([...new Set(uniqConcepts)]);
   }, [props.results]);
 
   return (
@@ -34,38 +33,24 @@ const ResultsTable = (props) => {
         </thead>
         <tbody>
           {props.results
-            .filter((user) => user.name.includes(nameFilter))
-            .map((user, idx) => {
+            .filter(({ name }) => name.includes(nameFilter))
+            .map(({ results, name }, idx) => {
               return (
-                <tr key={user.name}>
+                <tr key={name}>
                   <td>{idx}</td>
-                  <td>{user.name}</td>
+                  <td>{name}</td>
                   {uniqueConcepts.map((concept) => {
-                    return <td>{user.results["Negation"].correct}</td>;
+                    const percent = (
+                      (results[concept].correct / results[concept].total) *
+                      100
+                    ).toFixed(2);
+                    const colour = percent > 70 ? "green" : "red";
+                    return (
+                      <td key={concept} style={{ backgroundColor: colour }}>
+                        {percent}%
+                      </td>
+                    );
                   })}
-                </tr>
-              );
-            })}
-          {props.results
-            .filter((user) => user.name.includes(nameFilter))
-            .map((user, idx) => {
-              const percent = Object.keys(user.results).map(
-                (concept) =>
-                  (user.results[concept].correct /
-                    user.results[concept].total) *
-                  100
-              );
-              return (
-                <tr key={user.name}>
-                  <td>{idx}</td>
-                  <td>{user.name}</td>
-                  {percent.map((score) => (
-                    <td
-                      style={{ backgroundColor: score > 50 ? "green" : "red" }}
-                    >
-                      {score}%
-                    </td>
-                  ))}
                 </tr>
               );
             })}
@@ -84,7 +69,6 @@ const ResultsTable = (props) => {
           </Form.Group>
         </Form>
       </div>
-      {JSON.stringify(props.results)}
     </>
   );
 };

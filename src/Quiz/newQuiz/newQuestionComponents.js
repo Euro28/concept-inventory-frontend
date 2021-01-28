@@ -51,7 +51,6 @@ const QuestionInput = (props) => {
           name="question"
           placeholder="Question..."
           onChange={(e) => props.setTitle(e.target.value)}
-          value={props.title}
         />
       </Form.Group>
 
@@ -61,13 +60,22 @@ const QuestionInput = (props) => {
           as="select"
           defaultValue="Choose..."
           onChange={(e) => props.setMisconception(e.target.value)}
-          value={props.misconception}
         >
           <option>Choose...</option>
           {Object.keys(props.concepts).map((concpt) => (
             <option key={concpt}> {concpt} </option>
           ))}
         </Form.Control>
+      </Form.Group>
+      <Form.Group controlid="questionExplanation">
+        <Form.Label> Question Explanation: </Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          name="explanation"
+          placeholder="Explanation..."
+          onChange={(e) => props.setExplanation(e.target.value)}
+        />
       </Form.Group>
     </>
   );

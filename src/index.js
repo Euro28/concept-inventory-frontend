@@ -17,7 +17,7 @@ axios.interceptors.request.use(
   }
 );
 
-axios.defaults.baseURL = "https://concept-api2.herokuapp.com"
+axios.defaults.baseURL = "https://concept-api2.herokuapp.com";
 
 ReactDOM.render(
   <React.StrictMode>

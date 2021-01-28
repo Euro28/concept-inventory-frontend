@@ -1,14 +1,26 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import _ from "lodash";
 
 import Spinner from "./Spinner.jsx";
 import ConceptResult from "./ConceptResult.jsx";
 import Toolbar from "../Dashboard/dashboardToolbar.jsx";
+import markResults from "../Results/markResults.js";
+import WrongQuestions from "./wrongQuestions.jsx";
 
 const Results = () => {
   const [quizResults, setQuizResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [conceptsExplanations, setConceptExplanations] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [wrongAnswers, setWrongAnswers] = useState([]);
+
+  const trimResults = ({ choices, explanation, title, correctAnswer }) => ({
+    choices,
+    explanation,
+    title,
+    correctAnswer,
+  });
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -17,10 +29,28 @@ const Results = () => {
 
         const results = await axios.get("/api/results");
         const allConcepts = await axios.get("/api/concepts");
+        const questions = await axios.get("/api/questions");
+        const markedResults = markResults(results.data, questions);
 
+        const wrong = Object.keys(results.data)
+          .map((answer) => {
+            let question = questions.data[0].pages[0].elements.find(
+              (question) => question.valueName === answer
+            );
+            question = trimResults(question);
+            question.userAnswer = results.data[answer];
+
+            return question;
+          })
+          .filter(
+            (question) =>
+              !_.isEqual(question.userAnswer, question.correctAnswer)
+          );
+
+        setWrongAnswers(wrong);
+        setQuestions(questions.data[0].pages[0].elements);
+        setQuizResults(markedResults);
         setConceptExplanations(allConcepts.data);
-        setQuizResults(results.data);
-
         setLoading(false);
       } catch (err) {
         console.log(err);
@@ -43,10 +73,20 @@ const Results = () => {
     </div>
   );
 
+  const questionFeedback = (
+    <div>
+      {wrongAnswers.map((answer) => (
+        <WrongQuestions key={answer.valueName} wrongAnswer={answer} />
+      ))}
+    </div>
+  );
+
   return (
     <>
       <Toolbar />
       {loading ? <Spinner /> : results}
+      <h1>Questions you got wrong</h1>
+      {!loading && questionFeedback}
     </>
   );
 };

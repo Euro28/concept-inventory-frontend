@@ -3,6 +3,7 @@ import axios from "axios";
 import ResultsTable from "./resultsTable.jsx";
 import Spinner from "../Quiz/Spinner.jsx";
 import Toolbar from "../Dashboard/dashboardToolbar.jsx";
+import markResults from "./markResults.js";
 
 const AllResults = () => {
   const [results, setResults] = useState([]);
@@ -15,13 +16,23 @@ const AllResults = () => {
         setLoading(true);
         const res = await axios.get("/api/allResults");
         const concept = await axios.get("/api/concepts");
-        setResults(res.data);
+        const questions = await axios.get("/api/questions");
+
+        const result = res.data
+          .filter((user) => user.results)
+          .map((user) => ({
+            results: markResults(user.results, questions),
+            name: user.name,
+          }));
+
         setConcepts(concept.data);
+        setResults(result);
         setLoading(false);
       } catch (err) {
         console.log(err);
       }
     };
+
     getALlResults();
   }, []);
 
