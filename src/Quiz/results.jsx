@@ -41,10 +41,15 @@ const Results = () => {
 
             return question;
           })
-          .filter(
-            (question) =>
-              !_.isEqual(question.userAnswer, question.correctAnswer)
+          .filter((question) => 
+            (
+              _.difference(question.userAnswer, question.correctAnswer)
+                .length !== 0
+            )
           );
+
+        console.log("WRONG");
+        console.log(wrong);
 
         setWrongAnswers(wrong);
         setQuizResults(markedResults);

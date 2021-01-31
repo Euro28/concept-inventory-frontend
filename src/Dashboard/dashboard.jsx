@@ -30,22 +30,27 @@ const Dashboard = () => {
       <DashboardToolbar logout={logout} />
 
       <Link to={"/takeQuiz"} style={{ textDecoration: "none" }}>
-        <Button disabled={user.takenQuiz} variant="primary" size="lg" block>
+        <Button disabled={user.takenQuiz} variant="primary" size="lg">
           {user.takenQuiz
             ? "Already Taken quiz"
             : "Propositional Logic Concept Test"}
         </Button>
       </Link>
+      <Link to={"/changeConcepts"} style={{ textDecoration: "none" }}>
+        <Button disabled={user.takenQuiz} variant="info" size="lg">
+          Recalibrate concepts
+        </Button>
+      </Link>
 
       {user.isAdmin ? (
         <Link to={"/allResults"}>
-          <Button variant="success" size="lg" block>
+          <Button variant="success" size="lg">
             View all results
           </Button>{" "}
         </Link>
       ) : (
         <Link to={"/results"}>
-          <Button variant="success" size="lg" block disabled={!user.takenQuiz}>
+          <Button variant="success" size="lg" disabled={!user.takenQuiz}>
             {!user.takenQuiz
               ? "Take test first to be able to view results"
               : "View Results"}
@@ -54,7 +59,7 @@ const Dashboard = () => {
       )}
       {user.isAdmin && (
         <Link to={"/makeQuiz"}>
-          <Button variant="info" size="lg" block>
+          <Button variant="info" size="lg" >
             Edit Concept Inventory
           </Button>
         </Link>

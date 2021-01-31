@@ -14,8 +14,11 @@ const Register = () => {
   const submitName = async (e) => {
     e.preventDefault();
     try {
+      const concepts = await axios.get("/api/concepts")
+
       const register = await axios.post("/api/register", {
         name,
+        conceptsToTake: Object.keys(concepts.data)
       });
       if (register.status === 201) {
         setAlert("success");
