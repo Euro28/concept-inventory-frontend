@@ -48,8 +48,8 @@ const ChangeConcept = () => {
         "SUCCESS! Updated Concepts that will appear on your next quiz!"
       );
       setTimeout(() => {
-        setSuccess("")
-      }, 2000)
+        setSuccess("");
+      }, 2000);
     } catch (err) {
       setError(
         "Could not recalibrate concepts please try again or contact Euro"
