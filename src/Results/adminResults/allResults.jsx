@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ResultsTable from "./resultsTable.jsx";
-import Spinner from "../Quiz/Spinner.jsx";
-import Toolbar from "../Dashboard/dashboardToolbar.jsx";
+import Spinner from "../../Quiz/Spinner.jsx";
+import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
 import markResults from "./markResults.js";
 
 const AllResults = () => {

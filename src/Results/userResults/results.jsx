@@ -1,11 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import _ from "lodash";
+import { useLocation } from "react-router-dom";
 
-import Spinner from "./Spinner.jsx";
+import Spinner from "../../Quiz/Spinner.jsx";
 import ConceptResult from "./ConceptResult.jsx";
-import Toolbar from "../Dashboard/dashboardToolbar.jsx";
-import markResults from "../Results/markResults.js";
+import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
+import markResults from "../adminResults/markResults.js";
 import WrongQuestions from "./wrongQuestions.jsx";
 
 const Results = () => {
@@ -13,6 +14,8 @@ const Results = () => {
   const [loading, setLoading] = useState(false);
   const [conceptsExplanations, setConceptExplanations] = useState([]);
   const [wrongAnswers, setWrongAnswers] = useState([]);
+
+  const location = useLocation();
 
   const trimResults = ({ choices, explanation, title, correctAnswer }) => ({
     choices,
@@ -26,26 +29,26 @@ const Results = () => {
       try {
         setLoading(true);
 
-        const results = await axios.get("/api/results");
+        const results = location.state.results;
+        //const results = await axios.get("/api/results");
         const allConcepts = await axios.get("/api/concepts");
         const questions = await axios.get("/api/questions");
-        const markedResults = markResults(results.data, questions);
+        const markedResults = markResults(results, questions);
 
-        const wrong = Object.keys(results.data)
+        const wrong = Object.keys(results)
           .map((answer) => {
             let question = questions.data[0].pages[0].elements.find(
               (question) => question.valueName === answer
             );
             question = trimResults(question);
-            question.userAnswer = results.data[answer];
+            question.userAnswer = results[answer];
 
             return question;
           })
-          .filter((question) => 
-            (
+          .filter(
+            (question) =>
               _.difference(question.userAnswer, question.correctAnswer)
                 .length !== 0
-            )
           );
 
         console.log("WRONG");
