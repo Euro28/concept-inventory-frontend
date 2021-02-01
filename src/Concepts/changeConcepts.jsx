@@ -36,6 +36,7 @@ const ChangeConcept = () => {
 
   const setNewConcepts = async (e) => {
     e.preventDefault();
+
     const newConcepts = Object.keys(checked).filter(
       (concept) => checked[concept]
     );
@@ -43,6 +44,9 @@ const ChangeConcept = () => {
     try {
       await axios.patch("/api/setUserConcepts", {
         concepts: newConcepts,
+      });
+      await axios.patch("/api/takenQuiz", {
+        taken: false,
       });
       setSuccess(
         "SUCCESS! Updated Concepts that will appear on your next quiz!"

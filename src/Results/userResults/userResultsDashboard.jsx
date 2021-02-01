@@ -3,6 +3,7 @@ import axios from "axios";
 import Spinner from "../../Quiz/Spinner.jsx";
 import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
 import { Link } from "react-router-dom";
+import Button from "react-bootstrap/Button"
 
 const UserResultsDashboard = () => {
   const [results, setResults] = useState([]);
@@ -33,7 +34,7 @@ const UserResultsDashboard = () => {
         <>
           <h1>Dashboard for user results</h1>
           <div>
-            {results.map((result) => (
+            {results.map((result, idx) => (
               <div key={JSON.stringify(result)}>
                 <Link
                   to={{
@@ -41,7 +42,9 @@ const UserResultsDashboard = () => {
                     state: { results: result },
                   }}
                 >
-                  Result
+                  <Button variant="primary">
+                    Result-{idx}
+                  </Button>
                 </Link>
               </div>
             ))}

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import * as Survey from "survey-react";
 import Spinner from "./Spinner.jsx";
+import _ from "lodash";
 
 const Quiz = () => {
   const [questions, setQuestions] = useState({});
@@ -15,6 +16,21 @@ const Quiz = () => {
       try {
         setLoading(true);
         const questionsAPI = await axios.get("/api/questions");
+        const userConcepts = await axios.get("/api/userConcepts");
+
+        const questionsArray = questionsAPI.data[0].pages[0].elements;
+
+        let filteredQuestions = [];
+        userConcepts.data.forEach((concept) => {
+          const ques = questionsArray.filter(
+            (question) => question.misconception === concept
+          );
+          const sample = _.sampleSize(ques, 3);
+          filteredQuestions = filteredQuestions.concat(sample);
+        });
+
+        questionsAPI.data[0].pages[0].elements = filteredQuestions;
+
         setQuestions(questionsAPI.data[0]);
         setLoading(false);
       } catch (err) {
@@ -27,11 +43,13 @@ const Quiz = () => {
 
   const storeData = async (quizResults) => {
     try {
-      setLoading(true)
+      setLoading(true);
       await axios.post("/api/results", {
         results: quizResults,
       });
-      await axios.patch("/api/takenQuiz");
+      await axios.patch("/api/takenQuiz", {
+        taken: true,
+      });
       setLoading(false);
 
       history.replace("/dashboard");

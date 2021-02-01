@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "react-bootstrap/Modal";
 
 const ConceptResult = (props) => {
+  //Results should be props.score.totl but gonna hard code to 3
   return (
     <Modal.Dialog>
       <Modal.Header>

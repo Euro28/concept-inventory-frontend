@@ -37,8 +37,10 @@ const Dashboard = () => {
         </Button>
       </Link>
       <Link to={"/changeConcepts"} style={{ textDecoration: "none" }}>
-        <Button disabled={user.takenQuiz} variant="info" size="lg">
-          Recalibrate concepts
+        <Button disabled={!user.takenQuiz} variant="info" size="lg">
+          {user.takenQuiz
+            ? "Calibrate Concepts"
+            : "Take quiz before re-calibration"}
         </Button>
       </Link>
 
@@ -59,7 +61,7 @@ const Dashboard = () => {
       )}
       {user.isAdmin && (
         <Link to={"/makeQuiz"}>
-          <Button variant="info" size="lg" >
+          <Button variant="info" size="lg">
             Edit Concept Inventory
           </Button>
         </Link>

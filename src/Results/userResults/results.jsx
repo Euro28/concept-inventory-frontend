@@ -14,6 +14,7 @@ const Results = () => {
   const [loading, setLoading] = useState(false);
   const [conceptsExplanations, setConceptExplanations] = useState([]);
   const [wrongAnswers, setWrongAnswers] = useState([]);
+  const [markedConcepts, setMarkedConcepts] = useState([]);
 
   const location = useLocation();
 
@@ -30,7 +31,6 @@ const Results = () => {
         setLoading(true);
 
         const results = location.state.results;
-        //const results = await axios.get("/api/results");
         const allConcepts = await axios.get("/api/concepts");
         const questions = await axios.get("/api/questions");
         const markedResults = markResults(results, questions);
@@ -51,9 +51,11 @@ const Results = () => {
                 .length !== 0
           );
 
-        console.log("WRONG");
-        console.log(wrong);
+        const markedConcept = Object.keys(results).map(
+          (result) => result.split("-")[0]
+        );
 
+        setMarkedConcepts(markedConcept);
         setWrongAnswers(wrong);
         setQuizResults(markedResults);
         setConceptExplanations(allConcepts.data);

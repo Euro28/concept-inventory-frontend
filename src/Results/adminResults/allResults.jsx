@@ -7,7 +7,7 @@ import markResults from "./markResults.js";
 
 const AllResults = () => {
   const [results, setResults] = useState([]);
-  const [concepts, setConcepts] = useState({});
+  const [concepts, setConcepts] = useState(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -21,11 +21,13 @@ const AllResults = () => {
         const result = res.data
           .filter((user) => user.results)
           .map((user) => ({
-            results: markResults(user.results, questions),
+            results: user.results.map((result) =>
+              markResults(result, questions)
+            ),
             name: user.name,
           }));
 
-        setConcepts(concept.data);
+        setConcepts(Object.keys(concept.data));
         setResults(result);
         setLoading(false);
       } catch (err) {
@@ -42,7 +44,8 @@ const AllResults = () => {
       {loading ? (
         <Spinner />
       ) : (
-        <ResultsTable concepts={concepts} results={results} />
+        concepts &&
+        results && <ResultsTable concepts={concepts} results={results} />
       )}
     </>
   );

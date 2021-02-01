@@ -1,17 +1,26 @@
 import array from "lodash/array";
 
-const correctAns = (correct, given) => {
-  const diff = array.intersection(correct, given);
-  return diff.length === correct.length && correct.length === given.length;
+const correctAns = ({ correctAnswer }, given) => {
+  const diff = array.intersection(correctAnswer, given);
+  return (
+    diff.length === correctAnswer.length &&
+    correctAnswer.length === given.length
+  );
 };
 
 const markResults = (results, questions) => {
-  const correct = questions.data[0].pages[0].elements.map((question) => ({
-    misconception: question.misconception,
-    correct: correctAns(question.correctAnswer, results[question.valueName]),
-  }));
+  const mark = Object.keys(results).map((questionName) => {
+    const correctAnswer = questions.data[0].pages[0].elements.find(
+      (question) => question.valueName === questionName
+    );
 
-  const concepts = array.uniq(correct.map((ques) => ques.misconception));
+    return {
+      misconception: questionName.split("-")[0],
+      correct: correctAns(correctAnswer, results[questionName]),
+    };
+  });
+
+  const concepts = array.uniq(mark.map((ques) => ques.misconception));
   const count = {};
 
   concepts.forEach(
@@ -22,7 +31,7 @@ const markResults = (results, questions) => {
       })
   );
 
-  correct.forEach((ans) => {
+  mark.forEach((ans) => {
     count[ans.misconception].total++;
     if (ans.correct) count[ans.misconception].correct++;
   });
