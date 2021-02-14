@@ -4,28 +4,27 @@ import Navbar from "react-bootstrap/Navbar";
 import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import Cookies from "js-cookie";
+import { LinkContainer } from "react-router-bootstrap";
 
-const DashboardToolbar = (props) => {
+const DashboardToolbar = () => {
   const history = useHistory();
-
-  const logout = () => {
-    Cookies.remove("name");
-    history.push("/");
-  };
-
-  const dashboard = () => {
-    history.push("/dashboard");
-  };
 
   return (
     <>
-      <Navbar bg="dark" variant="dark">
+      <Navbar bg="light" expand>
         <Navbar.Brand> Concept Inventory</Navbar.Brand>
-        <Nav>
-          <Button onClick={() => dashboard()}> Dashboard </Button>
+        <Nav className="mr-auto">
+          <LinkContainer to="/dashboard">
+            <Nav.Link> Dashboard</Nav.Link>
+          </LinkContainer>
+          <LinkContainer to="/results">
+            <Nav.Link> Results </Nav.Link>
+          </LinkContainer>
         </Nav>
         <Nav className="nav navbar-nav ml-auto">
-          <Button onClick={() => logout()}>Log out</Button>
+          <LinkContainer to="/">
+            <Button onClick={() => Cookies.remove("name")}>Log out</Button>
+          </LinkContainer>
         </Nav>
       </Navbar>
     </>
@@ -33,4 +32,3 @@ const DashboardToolbar = (props) => {
 };
 
 export default DashboardToolbar;
-

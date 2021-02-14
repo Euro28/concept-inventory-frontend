@@ -4,18 +4,63 @@ import Spinner from "../../Quiz/Spinner.jsx";
 import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
+import {
+  RadarChart,
+  PolarGrid,
+  Radar,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+} from "recharts";
+import markResults from "../adminResults/markResults.js";
 
 const UserResultsDashboard = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [radarResults, setRadarResults] = useState([]);
 
   useEffect(() => {
     setLoading(true);
     const getResults = async () => {
       try {
         const userResults = await axios.get("/api/results");
+        const questions = await axios.get("/api/questions");
         setResults(userResults.data);
+
+        const markedResults = userResults.data.map((result) =>
+          markResults(result, questions)
+        );
+
+        let formattedResultsForRadar = [];
+
+        markedResults.forEach((result) => {
+          Object.keys(result).forEach((concept) => {
+            const conceptScore = formattedResultsForRadar.filter(
+              (obj) => obj.concept === concept
+            );
+
+            const score = conceptScore[0];
+
+            if (conceptScore.length === 0) {
+              formattedResultsForRadar.push({
+                concept: concept,
+                correct: Number(result[concept].correct),
+                total: result[concept].total,
+              });
+            } else {
+              score.correct += result[concept].correct;
+              score.total += result[concept].total;
+            }
+          });
+        });
+
+        formattedResultsForRadar = formattedResultsForRadar.map((result) => ({
+          concept: result.concept,
+          score: ((result.correct / result.total) * 100).toFixed(2),
+          fullMark: 100,
+        }));
+
+        setRadarResults(formattedResultsForRadar);
       } catch (err) {
         setError("Could not retrieve user results please contact Euro ");
       }
@@ -25,6 +70,33 @@ const UserResultsDashboard = () => {
     setLoading(false);
   }, []);
 
+  const allResults = results.map((result, idx) => (
+    <div key={JSON.stringify(result)}>
+      <Link
+        to={{
+          pathname: "/userResults",
+          state: { results: result },
+        }}
+      >
+        <Button variant="primary">Result- {idx}</Button>
+      </Link>
+    </div>
+  ));
+
+  const radarChart = (
+    <RadarChart outRadius={90} width={730} height={250} data={radarResults}>
+      <PolarGrid />
+      <PolarAngleAxis dataKey="concept" />
+      <PolarRadiusAxis angle={30} domain={[0, 100]} />
+      <Radar
+        dataKey="score"
+        stroke="#82ca9d"
+        fill="#82ca9d"
+        fillOpacity={0.6}
+      />
+    </RadarChart>
+  );
+
   return (
     <div>
       <Toolbar />
@@ -33,20 +105,8 @@ const UserResultsDashboard = () => {
       ) : (
         <>
           <h1>Dashboard for user results</h1>
-          <div>
-            {results.map((result, idx) => (
-              <div key={JSON.stringify(result)}>
-                <Link
-                  to={{
-                    pathname: "/userResults",
-                    state: { results: result },
-                  }}
-                >
-                  <Button variant="primary">Result-{idx}</Button>
-                </Link>
-              </div>
-            ))}
-          </div>
+          {allResults}
+          {radarChart}
         </>
       )}
     </div>

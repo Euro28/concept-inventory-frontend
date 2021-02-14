@@ -20,14 +20,9 @@ const Dashboard = () => {
     loggedIn();
   }, []);
 
-  const logout = async () => {
-    Cookies.remove("name");
-    history.push("/");
-  };
-
   return (
     <div>
-      <DashboardToolbar logout={logout} />
+      <DashboardToolbar />
 
       <Link to={"/takeQuiz"} style={{ textDecoration: "none" }}>
         <Button disabled={user.takenQuiz} variant="primary" size="lg">
@@ -44,13 +39,7 @@ const Dashboard = () => {
         </Button>
       </Link>
 
-      {user.isAdmin ? (
-        <Link to={"/allResults"}>
-          <Button variant="success" size="lg">
-            View all results
-          </Button>{" "}
-        </Link>
-      ) : (
+      {user.isAdmin && (
         <Link to={"/results"}>
           <Button variant="success" size="lg" disabled={!user.takenQuiz}>
             {!user.takenQuiz
