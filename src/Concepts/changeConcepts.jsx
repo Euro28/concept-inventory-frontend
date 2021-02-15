@@ -4,6 +4,8 @@ import Toolbar from "../Dashboard/dashboardToolbar.jsx";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Alert from "react-bootstrap/Alert";
+import { useLocation } from "react-router-dom";
+import _ from "lodash";
 
 const ChangeConcept = () => {
   const [concepts, setConcepts] = useState([]);
@@ -13,21 +15,29 @@ const ChangeConcept = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
+  const location = useLocation();
+
   useEffect(() => {
     const getConcepts = async () => {
       setLoading(true);
-      const concept = await axios.get("/api/concepts");
+      const quiz = await axios.get("/api/questions");
+
+      const quizConcepts = quiz.data.find(
+        (quiz) => quiz.title === location.state.quizTitle
+      ).concepts;
+
       const userConcepts = await axios.get("/api/userConcepts");
 
-      const listOfConcepts = Object.keys(concept.data);
 
-      const checkedConcepts = {};
-      listOfConcepts.forEach((concept) => {
-        checkedConcepts[concept] = userConcepts.data.includes(concept);
-      });
+      const correctUserConcept = userConcepts.data.find(
+        (quiz) => quiz.title === location.state.quizTitle
+      ).concepts;
 
+      const checkedConcepts = _.intersection(correctUserConcept, quizConcepts);
+
+      console.log("checkedCocept", checkedConcepts);
       setChecked(checkedConcepts);
-      setConcepts(listOfConcepts);
+      setConcepts(quizConcepts);
       setLoading(false);
     };
 
@@ -37,17 +47,15 @@ const ChangeConcept = () => {
   const setNewConcepts = async (e) => {
     e.preventDefault();
 
-    const newConcepts = Object.keys(checked).filter(
-      (concept) => checked[concept]
-    );
-
     try {
       await axios.patch("/api/setUserConcepts", {
-        concepts: newConcepts,
+        concepts: checked,
+        title: location.state.quizTitle,
       });
       await axios.patch("/api/takenQuiz", {
         taken: false,
       });
+
       setSuccess(
         "SUCCESS! Updated Concepts that will appear on your next quiz!"
       );
@@ -62,8 +70,13 @@ const ChangeConcept = () => {
   };
 
   const handleCheck = (e) => {
-    const checkedCopy = checked;
-    checkedCopy[e.target.id] = e.target.checked;
+    let checkedCopy = checked;
+
+    if (e.target.checked) {
+      checkedCopy.push(e.target.id);
+    } else {
+      checkedCopy = checkedCopy.filter((concept) => concept !== e.target.id);
+    }
 
     setChecked(checkedCopy);
     setTest(!test); //purpose of this is to make dom reset its really hacky
@@ -75,7 +88,8 @@ const ChangeConcept = () => {
       {!loading && (
         <>
           <h1>
-            Please select what concepts you want to appear on your next test.
+            Select Concepts you would like to appear when testing{" "}
+            {location.state.quizTitle}
           </h1>
           <Form onSubmit={setNewConcepts}>
             {concepts.map((concept) => (
@@ -84,7 +98,7 @@ const ChangeConcept = () => {
                   type={"checkbox"}
                   id={concept}
                   label={concept}
-                  checked={checked[concept]}
+                  checked={checked.includes(concept)}
                   onChange={handleCheck}
                 />
               </div>

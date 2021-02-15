@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import * as Survey from "survey-react";
 import Spinner from "./Spinner.jsx";
 import _ from "lodash";
@@ -10,28 +10,34 @@ const Quiz = () => {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
+  const location = useLocation();
 
   useEffect(() => {
     const getQuestions = async () => {
       try {
         setLoading(true);
-        const questionsAPI = await axios.get("/api/questions");
         const userConcepts = await axios.get("/api/userConcepts");
-
-        const questionsArray = questionsAPI.data[0].pages[0].elements;
+        const questionsArray = location.state.quiz.pages[0].elements;
 
         let filteredQuestions = [];
-        userConcepts.data.forEach((concept) => {
+
+        const testedConcepts = userConcepts.data.find(
+          (concepts) => concepts.title === location.state.quiz.title
+        );
+
+        testedConcepts.concepts.forEach((concept) => {
           const ques = questionsArray.filter(
             (question) => question.misconception === concept
           );
+
           const sample = _.sampleSize(ques, 3);
           filteredQuestions = filteredQuestions.concat(sample);
         });
 
-        questionsAPI.data[0].pages[0].elements = filteredQuestions;
+        location.state.quiz.pages[0].elements = filteredQuestions;
 
-        setQuestions(questionsAPI.data[0]);
+        setQuestions(location.state.quiz);
+
         setLoading(false);
       } catch (err) {
         console.log(err);

@@ -24,14 +24,12 @@ const Dashboard = () => {
     <div>
       <DashboardToolbar />
 
-      <Link to={"/takeQuiz"} style={{ textDecoration: "none" }}>
+      <Link to={"/selectTest"} style={{ textDecoration: "none" }}>
         <Button disabled={user.takenQuiz} variant="primary" size="lg">
-          {user.takenQuiz
-            ? "Already Taken quiz"
-            : "Propositional Logic Concept Test"}
+          {user.takenQuiz ? "Already Taken quiz" : "Take Concept Test"}
         </Button>
       </Link>
-      <Link to={"/changeConcepts"} style={{ textDecoration: "none" }}>
+      <Link to={"/selectConcept"} style={{ textDecoration: "none" }}>
         <Button disabled={!user.takenQuiz} variant="info" size="lg">
           {user.takenQuiz
             ? "Calibrate Concepts"
@@ -40,18 +38,23 @@ const Dashboard = () => {
       </Link>
 
       {user.isAdmin && (
-        <Link to={"/results"}>
-          <Button variant="success" size="lg" disabled={!user.takenQuiz}>
-            {!user.takenQuiz
-              ? "Take test first to be able to view results"
-              : "View Results"}
+        <Link to={"/allResults"}>
+          <Button variant="success" size="lg">
+            All Results
           </Button>
         </Link>
       )}
       {user.isAdmin && (
-        <Link to={"/makeQuiz"}>
+        <Link to={"/selectSubject"}>
           <Button variant="info" size="lg">
             Edit Concept Inventory
+          </Button>
+        </Link>
+      )}
+      {user.isAdmin && (
+        <Link to={"/createQuiz"}>
+          <Button variant="primary" size="lg">
+            Create New Concept Inventory
           </Button>
         </Link>
       )}

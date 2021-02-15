@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   MYFORM,
   CONTAINER,
@@ -26,6 +27,8 @@ const NewQuestion = () => {
   const [error, setError] = useState("");
   const [explanation, setExplanation] = useState("");
 
+  const location = useLocation();
+
   const addAnswer = (ans) => {
     setNewAnswer(false);
 
@@ -38,8 +41,7 @@ const NewQuestion = () => {
   useEffect(() => {
     const getQuiz = async () => {
       try {
-        const quizQuestions = await axios.get("/api/questions");
-        const questions = quizQuestions.data[0].pages[0].elements;
+        const questions = location.state.questions.pages[0].elements;
         setQuestions(questions);
 
         const concepts = await axios.get("/api/concepts");
@@ -60,7 +62,7 @@ const NewQuestion = () => {
 
     try {
       await axios.patch("/api/questions/remove", {
-        quizTitle: "Propositional Logic",
+        quizTitle: location.state.questions.title,
         title,
       });
     } catch (err) {
@@ -98,7 +100,7 @@ const NewQuestion = () => {
     try {
       await axios.patch("/api/questions", {
         question: question,
-        title: "Propositional Logic",
+        title: location.state.questions.title,
       });
 
       setAnswers([]);
@@ -139,6 +141,7 @@ const NewQuestion = () => {
   return (
     <>
       <Toolbar />
+      <h1>{location.state.questions.title}</h1>
       <CONTAINER>
         <MYFORM className="mx-auto">
           <QuestionInput

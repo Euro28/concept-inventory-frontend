@@ -9,7 +9,10 @@ import ChangeConcept from "./Concepts/changeConcepts.jsx";
 import AllResults from "./Results/adminResults/allResults.jsx";
 import { Redirect, Route, Switch } from "react-router-dom";
 import UserResults from "./Results/userResults/results.jsx";
-//import Main from "./main.jsx";
+import CreateQuiz from "./Quiz/createQuiz/createQuiz.jsx";
+import EditDashboard from "./Quiz/editQuizDashboard.jsx";
+import TestDashboard from "./Quiz/takeQuizDashboard.jsx";
+import ConceptDashboard from "./Concepts/conceptsDashboard.jsx";
 
 function App() {
   return (
@@ -24,6 +27,10 @@ function App() {
         <Route exact path="/makeQuiz" component={MakeQuiz} />
         <Route exact path="/allResults" component={AllResults} />
         <Route exact path="/changeConcepts" component={ChangeConcept} />
+        <Route exact path="/createQuiz" component={CreateQuiz} />
+        <Route exact path="/selectSubject" component={EditDashboard} />
+        <Route exact path="/selectTest" component={TestDashboard} />
+        <Route exact path="/selectConcept" component={ConceptDashboard} />
         <Redirect from="/" to="/" />
       </Switch>
     </div>
