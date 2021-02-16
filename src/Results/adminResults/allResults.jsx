@@ -4,28 +4,29 @@ import ResultsTable from "./resultsTable.jsx";
 import Spinner from "../../Quiz/Spinner.jsx";
 import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
 import markResults from "./markResults.js";
+import { useLocation } from "react-router-dom";
 
 const AllResults = () => {
   const [results, setResults] = useState([]);
   const [concepts, setConcepts] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const location = useLocation();
+
   useEffect(() => {
-    const getALlResults = async () => {
+    const getAllResults = async () => {
       try {
         setLoading(true);
-        const res = await axios.get("/api/allResults");
-        const concept = await axios.get("/api/concepts");
-        const questions = await axios.get("/api/questions");
 
-        const result = res.data
-          .filter((user) => user.results)
-          .map((user) => ({
-            results: user.results.map((result) =>
-              markResults(result, questions)
-            ),
-            name: user.name,
-          }));
+        const concept = await axios.get("/api/concepts");
+        const questions = location.state.quiz.pages[0].elements;
+
+        const result = location.state.userResults.map((user) => ({
+          results: user.quizResults.map((attempt) =>
+            markResults(attempt.quizResults, location.state.quiz)
+          ),
+          name: user.name,
+        }));
 
         setConcepts(Object.keys(concept.data));
         setResults(result);
@@ -35,18 +36,18 @@ const AllResults = () => {
       }
     };
 
-    getALlResults();
+    getAllResults();
   }, []);
 
   return (
     <>
       <Toolbar />
-      {loading ? (
-        <Spinner />
-      ) : (
-        concepts &&
-        results && <ResultsTable concepts={concepts} results={results} />
-      )}
+  {loading ? (
+  <Spinner />
+  ) : (
+  concepts &&
+  results && <ResultsTable concepts={concepts} results={results} />
+  )}
     </>
   );
 };

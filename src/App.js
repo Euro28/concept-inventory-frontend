@@ -13,8 +13,8 @@ import CreateQuiz from "./Quiz/createQuiz/createQuiz.jsx";
 import EditDashboard from "./Quiz/editQuizDashboard.jsx";
 import TestDashboard from "./Quiz/takeQuizDashboard.jsx";
 import ConceptDashboard from "./Concepts/conceptsDashboard.jsx";
-import SelectResult from "./Results/selectUserResults.jsx"
-
+import SelectResult from "./Results/selectUserResults.jsx";
+import AdminSelectResult from "./Results/adminResults/adminResultsDashboard.jsx"
 function App() {
   return (
     <div className="wrapper">
@@ -32,7 +32,8 @@ function App() {
         <Route exact path="/selectSubject" component={EditDashboard} />
         <Route exact path="/selectTest" component={TestDashboard} />
         <Route exact path="/selectConcept" component={ConceptDashboard} />
-        <Route exact path="/selectResult" component={SelectResult}/>
+        <Route exact path="/selectResult" component={SelectResult} />
+        <Route exact path="/adminSelectResult" component={AdminSelectResult}/>
         <Redirect from="/" to="/" />
       </Switch>
     </div>

@@ -38,7 +38,7 @@ const Dashboard = () => {
       </Link>
 
       {user.isAdmin && (
-        <Link to={"/allResults"}>
+        <Link to={"/adminSelectResult"}>
           <Button variant="success" size="lg">
             All Results
           </Button>
