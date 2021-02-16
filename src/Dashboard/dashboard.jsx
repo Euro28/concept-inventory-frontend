@@ -24,11 +24,15 @@ const Dashboard = () => {
     <div>
       <DashboardToolbar />
 
-      <Link to={"/selectTest"} style={{ textDecoration: "none" }}>
-        <Button disabled={user.takenQuiz} variant="primary" size="lg">
-          {user.takenQuiz ? "Already Taken quiz" : "Take Concept Test"}
-        </Button>
-      </Link>
+      {!user.isAdmin && (
+        <Link to={"/selectTest"} style={{ textDecoration: "none" }}>
+          <Button disabled={user.takenQuiz} variant="primary" size="lg">
+            {user.takenQuiz ? "Already Taken quiz" : "Take Concept Test"}
+          </Button>
+        </Link>
+      )}
+      {!user.isAdmin && (
+
       <Link to={"/selectConcept"} style={{ textDecoration: "none" }}>
         <Button disabled={!user.takenQuiz} variant="info" size="lg">
           {user.takenQuiz
@@ -36,6 +40,7 @@ const Dashboard = () => {
             : "Take quiz before re-calibration"}
         </Button>
       </Link>
+      )}
 
       {user.isAdmin && (
         <Link to={"/adminSelectResult"}>
