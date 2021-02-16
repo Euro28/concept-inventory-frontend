@@ -25,39 +25,42 @@ const Results = () => {
     correctAnswer,
   });
 
+  const correctAns = (correctAnswer, given) => {
+    return _.isEqual(correctAnswer.sort(), given.sort());
+  };
+
   useEffect(() => {
     const fetchResults = async () => {
       try {
         setLoading(true);
 
-        const results = location.state.results;
-        const allConcepts = await axios.get("/api/concepts");
-        const questions = await axios.get("/api/questions");
-        const markedResults = markResults(results, questions);
+        console.log("location.state", location.state);
 
-        const wrong = Object.keys(results)
+        const allConcepts = await axios.get("/api/concepts");
+
+        //object.keys(result = location.state.userAnswers.quizResults
+        const wrong = Object.keys(location.state.userAnswers.quizResults)
           .map((answer) => {
-            let question = questions.data[0].pages[0].elements.find(
+            let question = location.state.quizQuestions.find(
               (question) => question.valueName === answer
             );
             question = trimResults(question);
-            question.userAnswer = results[answer];
+            question.userAnswer =
+              location.state.userAnswers.quizResults[answer];
 
             return question;
           })
           .filter(
             (question) =>
-              _.difference(question.userAnswer, question.correctAnswer)
-                .length !== 0
+              !correctAns(question.correctAnswer, question.userAnswer)
           );
 
-        const markedConcept = Object.keys(results).map(
-          (result) => result.split("-")[0]
-        );
+        console.log("wrong");
+        console.log(wrong);
 
-        setMarkedConcepts(markedConcept);
+        setMarkedConcepts(location.state.markedResults);
         setWrongAnswers(wrong);
-        setQuizResults(markedResults);
+        //setQuizResults(markedResults);
         setConceptExplanations(allConcepts.data);
         setLoading(false);
       } catch (err) {
@@ -70,11 +73,11 @@ const Results = () => {
 
   const results = (
     <div>
-      {Object.keys(quizResults).map((concept) => (
+      {Object.keys(markedConcepts).map((concept) => (
         <ConceptResult
           key={concept}
           title={concept}
-          score={quizResults[concept]}
+          score={markedConcepts[concept]}
           explanation={conceptsExplanations[concept]}
         />
       ))}

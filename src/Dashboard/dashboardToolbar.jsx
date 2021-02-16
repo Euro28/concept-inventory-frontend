@@ -17,7 +17,7 @@ const DashboardToolbar = () => {
           <LinkContainer to="/dashboard">
             <Nav.Link> Dashboard</Nav.Link>
           </LinkContainer>
-          <LinkContainer to="/results">
+          <LinkContainer to="/selectResult">
             <Nav.Link> Results </Nav.Link>
           </LinkContainer>
         </Nav>

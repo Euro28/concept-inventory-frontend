@@ -12,55 +12,66 @@ import {
   PolarRadiusAxis,
 } from "recharts";
 import markResults from "../adminResults/markResults.js";
+import { useLocation } from "react-router-dom";
 
 const UserResultsDashboard = () => {
   const [results, setResults] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [radarResults, setRadarResults] = useState([]);
+  const [markedResults, setMarkedResults] = useState({});
+  const [quizQuestions, setQuizQuestions] = useState([]);
+
+  const location = useLocation();
 
   useEffect(() => {
     setLoading(true);
     const getResults = async () => {
       try {
-        const userResults = await axios.get("/api/results");
         const questions = await axios.get("/api/questions");
-        setResults(userResults.data);
 
-        const markedResults = userResults.data.map((result) =>
-          markResults(result, questions)
+        const quizQuestions = questions.data.find(
+          (quiz) => quiz.title === location.state.quizTitle
         );
 
-        let formattedResultsForRadar = [];
+        const markedResults = location.state.results.map((result) =>
+          markResults(result.quizResults, quizQuestions)
+        );
 
-        markedResults.forEach((result) => {
-          Object.keys(result).forEach((concept) => {
-            const conceptScore = formattedResultsForRadar.filter(
-              (obj) => obj.concept === concept
-            );
+        setMarkedResults(markedResults);
+        setQuizQuestions(quizQuestions.pages[0].elements);
+        setResults(location.state.results);
 
-            const score = conceptScore[0];
+        //let formattedResultsForRadar = [];
 
-            if (conceptScore.length === 0) {
-              formattedResultsForRadar.push({
-                concept: concept,
-                correct: Number(result[concept].correct),
-                total: result[concept].total,
-              });
-            } else {
-              score.correct += result[concept].correct;
-              score.total += result[concept].total;
-            }
-          });
-        });
+        //markedResults.forEach((result) => {
+        //Object.keys(result).forEach((concept) => {
+        //const conceptScore = formattedResultsForRadar.filter(
+        //(obj) => obj.concept === concept
+        //);
 
-        formattedResultsForRadar = formattedResultsForRadar.map((result) => ({
-          concept: result.concept,
-          score: ((result.correct / result.total) * 100).toFixed(2),
-          fullMark: 100,
-        }));
+        //const score = conceptScore[0];
 
-        setRadarResults(formattedResultsForRadar);
+        //if (conceptScore.length === 0) {
+        //formattedResultsForRadar.push({
+        //concept: concept,
+        //correct: Number(result[concept].correct),
+        //total: result[concept].total,
+        //});
+        //} else {
+        //score.correct += result[concept].correct;
+        //score.total += result[concept].total;
+        //}
+        //});
+        //});
+
+        //formattedResultsForRadar = formattedResultsForRadar.map((result) => ({
+        //concept: result.concept,
+        //score: ((result.correct / result.total) * 100).toFixed(2),
+        //fullMark: 100,
+        //}));
+
+        //setRadarResults(formattedResultsForRadar);
       } catch (err) {
         setError("Could not retrieve user results please contact Euro ");
       }
@@ -75,7 +86,11 @@ const UserResultsDashboard = () => {
       <Link
         to={{
           pathname: "/userResults",
-          state: { results: result },
+          state: {
+            userAnswers: results[idx],
+            markedResults: markedResults[idx],
+            quizQuestions,
+          },
         }}
       >
         <Button variant="primary">Result- {idx}</Button>
@@ -83,19 +98,19 @@ const UserResultsDashboard = () => {
     </div>
   ));
 
-  const radarChart = (
-    <RadarChart outRadius={90} width={730} height={250} data={radarResults}>
-      <PolarGrid />
-      <PolarAngleAxis dataKey="concept" />
-      <PolarRadiusAxis angle={30} domain={[0, 100]} />
-      <Radar
-        dataKey="score"
-        stroke="#82ca9d"
-        fill="#82ca9d"
-        fillOpacity={0.6}
-      />
-    </RadarChart>
-  );
+  //const radarchart = (
+  //<radarchart outradius={90} width={730} height={250} data={radarresults}>
+  //<polargrid />
+  //<polarangleaxis datakey="concept" />
+  //<polarradiusaxis angle={30} domain={[0, 100]} />
+  //<radar
+  //datakey="score"
+  //stroke="#82ca9d"
+  //fill="#82ca9d"
+  //fillopacity={0.6}
+  ///>
+  //</radarchart>
+  //);
 
   return (
     <div>
@@ -104,9 +119,8 @@ const UserResultsDashboard = () => {
         <Spinner />
       ) : (
         <>
-          <h1>Dashboard for user results</h1>
+          <h1>Results for {location.state.quizTitle}</h1>
           {allResults}
-          {radarChart}
         </>
       )}
     </div>

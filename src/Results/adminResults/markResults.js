@@ -10,7 +10,7 @@ const correctAns = ({ correctAnswer }, given) => {
 
 const markResults = (results, questions) => {
   const mark = Object.keys(results).map((questionName) => {
-    const correctAnswer = questions.data[0].pages[0].elements.find(
+    const correctAnswer = questions.pages[0].elements.find(
       (question) => question.valueName === questionName
     );
 

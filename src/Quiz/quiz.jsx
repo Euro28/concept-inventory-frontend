@@ -52,6 +52,7 @@ const Quiz = () => {
       setLoading(true);
       await axios.post("/api/results", {
         results: quizResults,
+        quizTitle: location.state.quiz.title
       });
       await axios.patch("/api/takenQuiz", {
         taken: true,

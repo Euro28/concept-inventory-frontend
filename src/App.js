@@ -13,6 +13,7 @@ import CreateQuiz from "./Quiz/createQuiz/createQuiz.jsx";
 import EditDashboard from "./Quiz/editQuizDashboard.jsx";
 import TestDashboard from "./Quiz/takeQuizDashboard.jsx";
 import ConceptDashboard from "./Concepts/conceptsDashboard.jsx";
+import SelectResult from "./Results/selectUserResults.jsx"
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route exact path="/selectSubject" component={EditDashboard} />
         <Route exact path="/selectTest" component={TestDashboard} />
         <Route exact path="/selectConcept" component={ConceptDashboard} />
+        <Route exact path="/selectResult" component={SelectResult}/>
         <Redirect from="/" to="/" />
       </Switch>
     </div>
