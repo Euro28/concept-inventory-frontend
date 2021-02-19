@@ -32,14 +32,13 @@ const Dashboard = () => {
         </Link>
       )}
       {!user.isAdmin && (
-
-      <Link to={"/selectConcept"} style={{ textDecoration: "none" }}>
-        <Button disabled={!user.takenQuiz} variant="info" size="lg">
-          {user.takenQuiz
-            ? "Calibrate Concepts"
-            : "Take quiz before re-calibration"}
-        </Button>
-      </Link>
+        <Link to={"/selectConcept"} style={{ textDecoration: "none" }}>
+          <Button disabled={!user.takenQuiz} variant="info" size="lg">
+            {user.takenQuiz
+              ? "Calibrate Concepts"
+              : "Take quiz before re-calibration"}
+          </Button>
+        </Link>
       )}
 
       {user.isAdmin && (
