@@ -17,18 +17,6 @@ const AllResults = () => {
 
   const location = useLocation();
 
-  const hash = (str) => {
-    let hash = 0;
-    if (str.length === 0) return 0;
-
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = (hash << 5) - hash + char;
-      hash = hash & hash;
-    }
-    return String.fromCharCode((hash % 10) + 65);
-  };
-
   useEffect(() => {
     const getAllResults = async () => {
       try {
@@ -36,13 +24,12 @@ const AllResults = () => {
 
         const concept = await axios.get("/api/concepts");
 
-        const result = location.state.userResults
-          .map((user) => ({
+        const result = location.state.userResults.map((user) => ({
           results: user.quizResults.map((attempt) =>
             markResults(attempt.quizResults, location.state.quiz)
           ),
           name: user.name,
-          userClass: hash(user.name),
+          userClass: user.userClass,
         }));
 
         setConcepts(Object.keys(concept.data));

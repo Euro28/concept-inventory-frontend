@@ -18,6 +18,9 @@ const AdminResultsDashboard = () => {
         const allQuizzes = await axios.get("/api/questions");
         const allResults = await axios.get("/api/allResults");
 
+        console.log("allResults.data")
+        console.log(allResults.data);
+
         setAllResults(allResults.data);
         setAllQuizzes(allQuizzes.data);
       } catch (err) {
@@ -38,6 +41,7 @@ const AdminResultsDashboard = () => {
         quizResults: user.results.filter(
           (result) => result.quizTitle === adminSubjectChoice
         ),
+        userClass: user.userClass,
       };
     });
 
