@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import Table from "react-bootstrap/Table";
-import Form from "react-bootstrap/Form";
 
 const ResultsTable = (props) => {
-  const [nameFilter, setNameFilter] = useState("");
-
   return (
     <>
       <Table striped bordered hover variant="dark">
         <thead>
           <tr>
             <th>Username</th>
+            <th>Class</th>
             {props.concepts.map((concept) => (
               <th key={concept}>{concept}</th>
             ))}
@@ -19,12 +17,16 @@ const ResultsTable = (props) => {
 
         <tbody>
           {props.results
-            .filter(({ name }) => name.includes(nameFilter))
-            .map(({ results, name }, idx) => {
+            .filter(({ name }) => name.includes(props.nameFilter))
+            .filter(({ name, userClass }) =>
+              userClass.includes(props.classFilter)
+            )
+            .map(({ results, name, userClass }) => {
               const rows = results.map((result) => {
                 return (
                   <tr key={JSON.stringify(result)}>
                     <td>{name}</td>
+                    <td>{userClass}</td>
                     {props.concepts.map((concept) => {
                       if (Object.keys(result).includes(concept)) {
                         const percent = (
@@ -53,19 +55,6 @@ const ResultsTable = (props) => {
             })}
         </tbody>
       </Table>
-      <div>
-        <Form>
-          <Form.Group controlId="formName">
-            <Form.Label> Name: </Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="filter name"
-              onChange={(e) => setNameFilter(e.target.value)}
-              value={nameFilter}
-            />
-          </Form.Group>
-        </Form>
-      </div>
     </>
   );
 };
