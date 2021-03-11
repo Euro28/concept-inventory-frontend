@@ -12,15 +12,10 @@ const DashboardToolbar = () => {
   return (
     <>
       <Navbar bg="light" expand>
+        <LinkContainer to="/dashboard">
+
         <Navbar.Brand> Concept Inventory</Navbar.Brand>
-        <Nav className="mr-auto">
-          <LinkContainer to="/dashboard">
-            <Nav.Link> Dashboard</Nav.Link>
-          </LinkContainer>
-          <LinkContainer to="/selectResult">
-            <Nav.Link> Results </Nav.Link>
-          </LinkContainer>
-        </Nav>
+        </LinkContainer>
         <Nav className="nav navbar-nav ml-auto">
           <LinkContainer to="/">
             <Button onClick={() => Cookies.remove("name")}>Log out</Button>

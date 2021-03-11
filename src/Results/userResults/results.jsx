@@ -34,8 +34,6 @@ const Results = () => {
       try {
         setLoading(true);
 
-        console.log("location.state", location.state);
-
         const allConcepts = await axios.get("/api/concepts");
 
         //object.keys(result = location.state.userAnswers.quizResults
@@ -54,10 +52,6 @@ const Results = () => {
             (question) =>
               !correctAns(question.correctAnswer, question.userAnswer)
           );
-
-        console.log("wrong");
-        console.log(wrong);
-
         setMarkedConcepts(location.state.markedResults);
         setWrongAnswers(wrong);
         //setQuizResults(markedResults);
@@ -69,7 +63,7 @@ const Results = () => {
     };
 
     fetchResults();
-  }, []);
+  }, [location.state]);
 
   const results = (
     <div>
@@ -95,9 +89,14 @@ const Results = () => {
   return (
     <>
       <Toolbar />
-      {loading ? <Spinner /> : results}
-      <h1>Questions you got wrong</h1>
-      {!loading && questionFeedback}
+      {loading ? (
+        <Spinner />
+      ) : (
+        <div style={{ display: "flex" }}>
+          {results}
+          {questionFeedback}
+        </div>
+      )}
     </>
   );
 };

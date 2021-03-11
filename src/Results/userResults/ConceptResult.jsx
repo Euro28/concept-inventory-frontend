@@ -13,8 +13,6 @@ const ConceptResult = (props) => {
           Results: {props.score.correct} / {props.score.total}
         </p>
       </Modal.Body>
-
-      <Modal.Footer>{props.explanation}</Modal.Footer>
     </Modal.Dialog>
   );
 };

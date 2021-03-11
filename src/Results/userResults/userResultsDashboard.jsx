@@ -3,11 +3,12 @@ import axios from "axios";
 import Spinner from "../../Quiz/Spinner.jsx";
 import Toolbar from "../../Dashboard/dashboardToolbar.jsx";
 import { Link } from "react-router-dom";
-import Button from "react-bootstrap/Button";
+import { Button } from "react-bootstrap";
 import markResults from "../adminResults/markResults.js";
 import { useLocation } from "react-router-dom";
 import { RadChart, getRadarResults } from "./RadarChart.js";
 import { ConceptLineChart, getLineChartResults } from "./LineChart.js";
+import UserResultsTable from "./UserResultsTable.js";
 
 const UserResultsDashboard = () => {
   const [results, setResults] = useState([]);
@@ -15,7 +16,7 @@ const UserResultsDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [radarResults, setRadarResults] = useState([]);
   const [lineResults, setLineResults] = useState([]);
-  const [markedResults, setMarkedResults] = useState({});
+  const [markedResults, setMarkedResults] = useState([]);
   const [quizQuestions, setQuizQuestions] = useState([]);
 
   const location = useLocation();
@@ -50,23 +51,6 @@ const UserResultsDashboard = () => {
     getResults();
   }, []);
 
-  const allResults = results.map((result, idx) => (
-    <div key={JSON.stringify(result)}>
-      <Link
-        to={{
-          pathname: "/userResults",
-          state: {
-            userAnswers: results[idx],
-            markedResults: markedResults[idx],
-            quizQuestions,
-          },
-        }}
-      >
-        <Button variant="primary">Result- {idx}</Button>
-      </Link>
-    </div>
-  ));
-
   return (
     <div>
       <Toolbar />
@@ -74,11 +58,22 @@ const UserResultsDashboard = () => {
         <Spinner />
       ) : (
         <>
-          <h1>Results for {location.state.quizTitle}</h1>
-          {allResults}
-          {JSON.stringify(markedResults)}
-          <RadChart results={radarResults} />
-          <ConceptLineChart data={lineResults} />
+          <div style={{ margin: "auto", width: "50%" }}>
+            <h1>Results for {location.state.quizTitle}</h1>
+          </div>
+          <UserResultsTable
+            markedResults={markedResults}
+            results={results}
+            questions={quizQuestions}
+          />
+          <div style={{ display: "flex" }}>
+            <div>
+              <RadChart results={radarResults} />
+            </div>
+            <div>
+              <ConceptLineChart data={lineResults} />
+            </div>
+          </div>
         </>
       )}
     </div>
