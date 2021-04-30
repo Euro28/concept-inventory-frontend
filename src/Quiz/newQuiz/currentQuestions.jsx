@@ -16,6 +16,12 @@ const CurrentQuestions = (props) => {
               <ListGroup.Item key={ques.title}>
                 <div style={{ maxWidth: "700px" }}>{ques.title}</div>
                 <Button
+                  style={{ float: "right", marginLeft: "20px" }}
+                  variant="primary"
+                >
+                  Edit
+                </Button>
+                <Button
                   style={{ float: "right" }}
                   variant="danger"
                   onClick={() => props.removeQuestion(ques.title)}

@@ -29,10 +29,13 @@ const CreateQuiz = () => {
   return (
     <>
       <Toolbar />
+      <div style={{paddingLeft: "50px", paddingTop: "50px"}}>
+
+      <h1>Create Concept Inventory</h1>
       <Form onSubmit={submitTitle}>
         <Form.Group controlId="quizName">
-          <Form.Label> Subject </Form.Label>
           <Form.Control
+            style={{ width: "30%" }}
             type="text"
             placeholder="Enter name"
             value={title}
@@ -40,10 +43,11 @@ const CreateQuiz = () => {
           />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Submit
+          Create Concept Inventory
         </Button>
       </Form>
       {success && <Alert variant="success">{success}</Alert>}
+      </div>
     </>
   );
 };
